@@ -40,6 +40,11 @@ app.use(function(req, res, next) {
 //Don't put anything after this that isn't already here; these two need to be the end of the file
 app.use('*', express.static(APP_PATH));
 
+app.listen(app.get('port'), function() {
+    console.log('Server started: http://localhost:' + app.get('port') + '/');
+});
+
+/*
 //NOTE: when moving to Heroku, remember to set up the MONGO_PASSWORD environment variable
 //MongoDB connection stuff
 MongoClient.connect('mongodb://note-tagger-db:' + process.env.MONGO_PASSWORD + '@ds157742.mlab.com:57742/note-tagger', function (err, client) {
@@ -49,3 +54,4 @@ MongoClient.connect('mongodb://note-tagger-db:' + process.env.MONGO_PASSWORD + '
       console.log('Server started: http://localhost:' + app.get('port') + '/');
   });
 })
+*/
