@@ -7,16 +7,9 @@ import NoteApp from './NoteApp.js';
 
 import '../css/base.css';
 
-/*
 ReactDOM.render((
         <Router history = {browserHistory}>
             <Route path="/" component={NoteApp}/>
         </Router>
-    )
-);
-*/
-
-ReactDOM.render((
-    <NoteApp/>),
-    document.getElementById('content')
+    ), document.getElementById('content')
 );

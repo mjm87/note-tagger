@@ -36,7 +36,6 @@ app.use(function(req, res, next) {
 
 
 
-
 //Don't put anything after this that isn't already here; these two need to be the end of the file
 app.use('*', express.static(APP_PATH));
 
