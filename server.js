@@ -38,6 +38,7 @@ app.get('/:noteID/tags', function(req, res) {
 app.put('/:noteID/:tagName', function(req, res) {
   var noteID = req.params.noteID;
   var tagToAdd = req.params.tagName;
+  //TODO do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
   db.collection("notes").updateOne(
     {id: noteID},
     {$push: {tags: {name: tagToAdd}}},
