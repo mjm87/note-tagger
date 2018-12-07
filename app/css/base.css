@@ -57,3 +57,13 @@ p, ul {
 ul {
   padding-left: 30px;
 }
+
+/* custom stuff */
+
+
+.editableTag {
+  background: aliceblue;
+  display: inline-block;
+  border: 1px solid black;
+  padding: 3px;
+}

@@ -1,15 +1,18 @@
 import React from 'react';
-import $ from 'jquery';
 
-// TODO: add other imports here
-import '../css/base.css';
+var editableTagStyle = {
+  background: 'aliceblue',
+  display: 'inline-block',
+  border: '1px solid black',
+  padding: '3px'  
+}
 
 module.exports = React.createClass({
   render: function() {
     return (
-      <div className="TODO:">
-        {/* Place JSX code here */}
-      </div>
+      <button type="button" onClick={this.props.handleClick} className="editableTag" style={editableTagStyle} >  
+          {this.props.tagName}
+      </button>
     );
   }
 });
