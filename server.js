@@ -24,13 +24,13 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/:note/tags', function(req, res) {
-  var noteID = Number(req.params.note);
-  db.collection('notes').findOne(
+app.get('/:noteID/tags', function(req, res) {
+  var noteID = req.params.noteID;
+  db.collection("notes").findOne(
     {id: noteID},
     function(err, result) {
       if (err) throw (err);
-      res.json(result.tags)
+      res.json(result.tags);
     })
 });
 
