@@ -65,8 +65,16 @@ app.get('/:tagName/notes', function(req, res) {
 
 //TODO ROUTING GOES HERE, HOORAY!
 
+// temporary routes: feel free to actually implement
+app.put('/:tagName/:noteID', function(req, res) {
+    console.log("PUT: " + req.params.tagName + " on note #" + req.params.noteID);
+    res.json(200);
+});
 
-
+app.delete('/:tagName/:noteID', function(req, res) {
+    console.log("DELETE: " + req.params.tagName + " from note #" + req.params.tagName);
+    res.json(200);
+});
 
 //Don't put anything after this that isn't already here; these two need to be the end of the file
 var mongoConnectionString = 'mongodb://notetaggerdb:' + process.env.MONGO_PASSWORD + '@ds157742.mlab.com:57742/note-tagger';

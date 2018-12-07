@@ -9,13 +9,24 @@ module.exports = React.createClass({
   OnAdded : function(tagName) {
     $.ajax({
       url: "/" + this.props.noteID + "/" + tagName,
-      type : 'POST'
+      type : 'PUT'
+    }).done(function(results) {
+      console.log("works: " + results);
+    }).fail(function(xhr,error,msg) {
+      console.log(xhr);
+      console.log(error);
+      console.log(msg);
     })
+
   },
   OnRemove: function (tagName){
     $.ajax({
       url: "/" + this.props.noteID + "/" + tagName,
       type : 'DELETE'
+    }).done(function(results) {
+      console.log("works: " + results);
+    }).fail(function(xhr,error,msg) {
+      console.log("failed");
     })
   },
   render: function() {
