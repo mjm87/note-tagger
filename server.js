@@ -24,6 +24,7 @@ app.use(function(req, res, next) {
     next();
 });
 
+//CRUD operations related to tags on a note
 app.get('/:noteID/tags', function(req, res) {
   var noteID = req.params.noteID;
   db.collection("notes").findOne(
@@ -34,6 +35,19 @@ app.get('/:noteID/tags', function(req, res) {
     })
 });
 
+app.put('/:noteID/:tagName', function(req, res) {
+  var noteID = req.params.noteID;
+  var tagToAdd = req.params.tagName;
+  db.collection("notes").updateOne(
+    {id: noteID},
+    {$push: {tags: {name: tagToAdd}}},
+    function(err, result) {
+      if (err) throw (err);
+      res.json(result.tags);
+    })
+});
+
+//Getting the notes associated with a tag
 app.get('/:tagName/notes', function(req, res) {
   var tagName = req.params.tagName;
   db.collection("tags").findOne(
@@ -43,6 +57,8 @@ app.get('/:tagName/notes', function(req, res) {
       res.json(result.notes);
     })
 });
+
+
 
 
 
