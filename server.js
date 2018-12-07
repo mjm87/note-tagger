@@ -34,6 +34,15 @@ app.get('/:noteID/tags', function(req, res) {
     })
 });
 
+app.get('/:tagName/notes', function(req, res) {
+  var tagName = req.params.tagName;
+  db.collection("tags").findOne(
+    {name: tagName},
+    function(err, result) {
+      if (err) throw (err);
+      res.json(result.notes);
+    })
+});
 
 
 
