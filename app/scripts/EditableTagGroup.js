@@ -21,7 +21,7 @@ module.exports = React.createClass({
   },
   OnRemove: function (tagName){
     $.ajax({
-      url: "/" + this.props.noteID + "/" + tagName,
+      url: "/" + tagName + "/" + this.props.noteID,
       type : 'DELETE'
     }).done(function(results) {
       console.log("works: " + results);

@@ -44,7 +44,8 @@ app.put('/:noteID/:tagName', function(req, res) {
     {$push: {tags: {name: tagToAdd}}},
     function(err, result) {
       if (err) throw (err);
-      res.json(result.tags);
+      //res.json(result.tags);              // NOTE: I commented this out so that the ajax call works nicer. I'm not certain we need the resulting tags on a put request??
+      res.json(200);
     })
 });
 
@@ -66,10 +67,12 @@ app.get('/:tagName/notes', function(req, res) {
 //TODO ROUTING GOES HERE, HOORAY!
 
 // temporary routes: feel free to actually implement
+/*
 app.put('/:tagName/:noteID', function(req, res) {
     console.log("PUT: " + req.params.tagName + " on note #" + req.params.noteID);
     res.json(200);
 });
+*/
 
 app.delete('/:tagName/:noteID', function(req, res) {
     console.log("DELETE: " + req.params.tagName + " from note #" + req.params.tagName);
