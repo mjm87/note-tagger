@@ -1,15 +1,24 @@
 import React from 'react';
-import $ from 'jquery';
-
-// TODO: add other imports here
 import '../css/base.css';
 
+// styling
+var tagCreatorStyle = {
+  background: 'aliceblue',
+  display: 'inline-block',
+  border: '1px solid black',
+  padding: '3px'  
+};
+
 module.exports = React.createClass({
-  render: function() {
-    return (
-      <div className="TODO:">
-        {/* Place JSX code here */}
-      </div>
-    );
-  }
+
+    AddTag: function() {
+        return this.props.handleClick("Fake");
+    },
+    render: function() {
+        return (
+            <button className="TagCreator" onClick={this.AddTag} style={tagCreatorStyle}>
+                +
+            </button>
+        );
+    }
 });
