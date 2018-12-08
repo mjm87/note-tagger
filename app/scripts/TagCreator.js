@@ -1,14 +1,6 @@
 import React from 'react';
 import '../css/base.css';
 
-// styling
-var tagCreatorStyle = {
-  background: 'aliceblue',
-  display: 'inline-block',
-  border: '1px solid black',
-  padding: '3px'  
-};
-
 module.exports = React.createClass({
 
     AddTag: function() {
@@ -16,7 +8,7 @@ module.exports = React.createClass({
     },
     render: function() {
         return (
-            <button className="TagCreator" onClick={this.AddTag} style={tagCreatorStyle}>
+            <button className="TagCreator" onClick={this.AddTag}>
                 +
             </button>
         );
