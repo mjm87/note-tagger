@@ -11,11 +11,9 @@ module.exports = React.createClass({
       url: "/" + this.props.noteID + "/" + tagName,
       type : 'PUT'
     }).done(function(results) {
-      console.log("works: " + results);
+      console.log("Added " + tagName + " to Note #" + this.props.noteID);
     }).fail(function(xhr,error,msg) {
-      console.log(xhr);
-      console.log(error);
-      console.log(msg);
+      console.log("Failed to add " + tagName + " to Note #" + this.props.noteID);
     })
 
   },
@@ -24,9 +22,9 @@ module.exports = React.createClass({
       url: "/" + tagName + "/" + this.props.noteID,
       type : 'DELETE'
     }).done(function(results) {
-      console.log("works: " + results);
+        console.log("Removed " + tagName + " from Note #" + this.props.noteID);
     }).fail(function(xhr,error,msg) {
-      console.log("failed");
+        console.log("Faled to remove " + tagName + " from Note #" + this.props.noteID);
     })
   },
   render: function() {
