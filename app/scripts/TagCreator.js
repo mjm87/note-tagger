@@ -10,10 +10,13 @@ module.exports = React.createClass({
     },
     handleTextChanged: function(e) {
         this.setState({text: e.target.value});
-        console.log("Changed to " + this.state.text);
+    },
+    submitText : function(e) {
+        if(e.key === 'Enter') {
+            this.addTag();
+        }
     },
     addTag: function() {
-        console.log("Trying to add " + this.state.text + " to the note");
         this.props.handleClick(this.state.text);
         this.setState({expanded: false});
         this.setState({text: ""});
@@ -22,7 +25,7 @@ module.exports = React.createClass({
         if(this.state.expanded){
             return (
                 <span>
-                    <input type="input" onChange={this.handleTextChanged} className="TagCreatorTextField"/>
+                    <input type="input" autoFocus onChange={this.handleTextChanged} onKeyPress={this.submitText} className="TagCreatorTextField"/>
                     <button type="button" onClick={this.addTag} className="TagCreator" > + </button>
                 </span>
             );
