@@ -2,8 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 
 import '../css/base.css';
-import EditableTag from './EditableTag.js';
-import TagCreator from './TagCreator.js';
+import Tag from './Tag.js';
 
 module.exports = React.createClass({
   OnAdded : function(tagName) {
@@ -32,14 +31,14 @@ module.exports = React.createClass({
     var OnRemove = this.OnRemove;       // TODO: figure out what React-y nonsense is going on?
     var tagList = this.props.data.map(function(tag){
       return (
-        <EditableTag tagName={tag.name} handleClick={OnRemove}/> 
+        <Tag handleClick={OnRemove} tagName={tag.name} tagType="editableTag" />
       );
     });
 
     return (
       <div className="EditableTagGroup">
         {tagList}
-        <TagCreator handleClick={this.OnAdded}/>
+        <Tag handleClick={this.OnAdded} tagName="+" tagType="TagCreator" />
       </div>
     );
   }

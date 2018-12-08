@@ -1,15 +1,14 @@
 import React from 'react';
-import $ from 'jquery';
-
-// TODO: add other imports here
-import '../css/base.css';
 
 module.exports = React.createClass({
+  OnClick : function() {
+    return this.props.handleClick(this.props.tagName);
+  },
   render: function() {
     return (
-      <div className="TODO:">
-        {/* Place JSX code here */}
-      </div>
+      <button type="button" onClick={this.OnClick} className={this.props.tagType} >  
+          {this.props.tagName}
+      </button>
     );
   }
 });

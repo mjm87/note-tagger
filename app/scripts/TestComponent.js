@@ -3,7 +3,6 @@ import $ from 'jquery';
 
 import '../css/base.css';
 
-import EditableTag from './EditableTag.js';
 import EditableTagGroup from './EditableTagGroup.js';
 
 module.exports = React.createClass({
