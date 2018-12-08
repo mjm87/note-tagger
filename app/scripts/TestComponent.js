@@ -13,10 +13,8 @@ module.exports = React.createClass({
 
   render: function() {
 
-    var list = [{name:"tag1"}, {name:"tag3"}];
-
     return (
-        <EditableTagGroup data={list} noteID="5"/>
+        <EditableTagGroup noteID="5"/>
     );
       }
 });

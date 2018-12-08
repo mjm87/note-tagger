@@ -3,42 +3,76 @@ import $ from 'jquery';
 
 import '../css/base.css';
 import Tag from './Tag.js';
+import TagCreator from './TagCreator.js';
 
 module.exports = React.createClass({
-  OnAdded : function(tagName) {
+
+  getInitialState: function() {
+    return { data: []};
+  },
+
+  componentDidMount: function() {
+    $.ajax({
+      url: "/" + this.props.noteID + "/tags",
+      type: 'GET'
+    })
+    .done(function(results){
+        this.setState({data: results});
+    }.bind(this))
+    .fail(function(xhr, status, error){
+        console.log("Couldn't retrieve tags for Note #" + this.props.noteID);
+    }.bind(this));
+  },
+
+  // adding the tag to the note
+  addTag: function(tagName) {
+    console.log("Adding " + tagName + " to Note #" + this.props.noteID);
+    let oldData = this.state.data;
+    let newData = oldData.concat({name: tagName});
     $.ajax({
       url: "/" + this.props.noteID + "/" + tagName,
       type : 'PUT'
     }).done(function(results) {
       console.log("Added " + tagName + " to Note #" + this.props.noteID);
-    }).fail(function(xhr,error,msg) {
+      this.setState({data: newData});
+    }.bind(this))
+    .fail(function(xhr, status, error) {
       console.log("Failed to add " + tagName + " to Note #" + this.props.noteID);
-    })
-
+      this.setState({data: oldData});
+    }.bind(this));
   },
-  OnRemove: function (tagName){
+
+  // removing the tag from the note
+  removeTag: function (tagName){
+    let oldData = this.state.data;
+    let newData = oldData.filter((t) => t.name != tagName);
     $.ajax({
       url: "/" + tagName + "/" + this.props.noteID,
       type : 'DELETE'
     }).done(function(results) {
-        console.log("Removed " + tagName + " from Note #" + this.props.noteID);
-    }).fail(function(xhr,error,msg) {
-        console.log("Faled to remove " + tagName + " from Note #" + this.props.noteID);
-    })
+        console.log("DONE: " + newData);
+        this.setState({data: newData});
+    }.bind(this))
+    .fail(function(xhr,error,msg) {
+        console.log("FAIL: " + oldData);
+        this.setState({data: oldData});
+    }.bind(this));
   },
+
+  // render
   render: function() {
 
-    var OnRemove = this.OnRemove;       // TODO: figure out what React-y nonsense is going on?
-    var tagList = this.props.data.map(function(tag){
+    var removeTag = this.removeTag;       // passing removeTag function into the mapping below (using closure???)
+    var tagList = this.state.data.map(function(tag){
       return (
-        <Tag handleClick={OnRemove} tagName={tag.name} tagType="editableTag" />
+        <Tag handleClick={removeTag} tagName={tag.name} tagType="editableTag" />
       );
     });
 
     return (
       <div className="EditableTagGroup">
         {tagList}
-        <Tag handleClick={this.OnAdded} tagName="+" tagType="TagCreator" />
+        <TagCreator handleClick={this.addTag} />
       </div>
     );
   }
