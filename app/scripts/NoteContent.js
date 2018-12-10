@@ -6,8 +6,14 @@ import '../css/base.css';
 
 module.exports = React.createClass({
 
-  handleTextChanged: function() {
-
+  getInitialState: function() {
+    return {text: ""};
+  },
+  saveContent: function() {
+    this.props.update(this.state.text);  
+  },
+  handleTextChanged: function(e) {
+    this.setState({text: e.target.value});
   },
   render: function() {
     return (
@@ -17,6 +23,7 @@ module.exports = React.createClass({
           defaultValue={this.props.content} 
           autoFocus 
           onChange={this.handleTextChanged} 
+          onBlur={this.saveContent}
           className="CommentContentTextField"/>
       </div>
     );
@@ -24,5 +31,4 @@ module.exports = React.createClass({
 });
 
 
-// TODO: add state and AJAX pulls?
 //TODO: consider not autofocusing in some cases
