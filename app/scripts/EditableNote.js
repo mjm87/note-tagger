@@ -41,8 +41,8 @@ module.exports = React.createClass({
   render: function() {
     return (
         <div>
-            <NoteHeader noteID="5" title="Untitled" update={updateTitle}/>
-            <NoteContent noteID="5" content="Salut monde" update={updateContent}/>
+            <NoteHeader noteID="5" title="Untitled" update={this.updateTitle}/>
+            <NoteContent noteID="5" content="Salut monde" update={this.updateContent}/>
             <EditableTagGroup noteID="5"/>
         </div>
     );
