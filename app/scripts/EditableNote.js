@@ -12,7 +12,7 @@ module.exports = React.createClass({
 
   getInitialState() {
     return {
-      id:null, 
+      id:this.props.noteID, 
       title:"Untitled", 
       content:"",
       mounted:false
@@ -41,15 +41,33 @@ module.exports = React.createClass({
     this.setState({content:content});
   },
   save: function() {
-
+    console.log(JSON.stringify(this.state));
+    var note = {
+      id: this.props.noteID,
+      name: this.state.title,
+      content: this.state.content
+    } 
+    $.ajax({
+      url: "/notes",
+      type: 'PUT',
+      data: note,
+      dataType:'json'
+    })
+    .done(function(results){ 
+      console.log("saved: " + results);
+    }.bind(this))
+    .fail(function(xhr, status, error){
+      console.log("failed to save");
+    }.bind(this));
   },
   render: function() {
     if(this.state.mounted) {
       return (
           <div>
-              <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle}/>
-              <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent}/>
+              <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle} />
+              <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />
               <EditableTagGroup noteID={this.props.noteID} />
+              <button type="button" onClick={this.save}>Save</button>
           </div>
       );
     } else {

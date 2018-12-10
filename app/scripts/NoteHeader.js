@@ -17,7 +17,6 @@ module.exports = React.createClass({
   saveTitle() {
     this.setState({renaming: false});
     this.props.update(this.state.text);
-    console.log("saving title");
   },
   render: function() {
 
