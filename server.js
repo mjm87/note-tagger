@@ -24,6 +24,60 @@ app.use(function(req, res, next) {
     next();
 });
 
+//Get a list of all tags
+app.get('/tags', function(req, res) {
+  db.collection("tags").find(
+    { },
+    {name: true, _id:false}).toArray(function(err, tagNames) {
+        if (err) throw err;
+        res.json(tagNames);
+    });
+});
+
+//Endpoint that creates a note with a given name and content, and with a default tag
+//if none are provided
+app.put('/notes', function(req, res){
+  var tagNames = req.body.tags;
+  var newOrOldID = Date.now();
+  var defaultTag = "untagged";
+  if (typeof tagNames === "undefined") {
+    tagNames = [{"name": "untagged"}]
+  }
+  if (req.body.id) {
+    newOrOldID = req.body.id;
+  }
+  db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
+  content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
+    if (err) throw (err);
+    console.log(result.value.id);
+    res.json(result.value.id);
+  });
+});
+
+
+
+//TODO: check the note's tags to ensure that the tags are deleted if this was their only note
+//This endpoint deletes a note or a tag with a given ID or name respectively
+app.delete('/:collection/:toBeDeleted', function(req, res){
+    var collectionToQuery = req.params.collection
+    if(collectionToQuery === "tags"){
+      db.collection("tags").findOneAndDelete(
+        {name: req.params.toBeDeleted},
+        function(err, result) {
+          if (err) throw (err);
+          res.json(200);
+        });
+    }
+    else if(collectionToQuery === "notes"){
+      db.collection("notes").findOneAndDelete(
+        {id: req.params.toBeDeleted},
+        function(err, result) {
+          if (err) throw (err);
+          res.json(200);
+        });
+    }
+});
+
 //Get the tags on a note
 app.get('/notes/:noteID/tags', function(req, res) {
   var noteID = req.params.noteID;
@@ -32,7 +86,7 @@ app.get('/notes/:noteID/tags', function(req, res) {
     function(err, result) {
       if (err) throw (err);
       res.json(result.tags);
-    })
+    });
 });
 
 //Getting the notes associated with a tag
@@ -46,7 +100,7 @@ app.get('/tags/:tagName/notes', function(req, res) {
     })
 });
 
-
+//TODO: add logic to ensure that if a tag doesn't exist yet, add it to the tag collection with the note
 //Handling associating tags with notes and vice versa
 app.put('/:collection/:noteID/:tagName', function(req, res) {
   collectionToQuery = req.params.collection;
@@ -74,6 +128,7 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
+//TODO: if a tag is deleted from a note, and that was its only note, delete the tag
 app.delete('/:collection/:noteID/:tagName', function(req, res) {
   collectionToQuery = req.params.collection;
   var noteID = req.params.noteID;
@@ -99,26 +154,14 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: Endpoint to get all tags
 //TODO: Take a list of notes as input (JSON) and get the name/id of each
-//TODO: Get the contents/tags/name of selected note
+//TODO: Get/Put the contents/name of selected note (noteID)
+//TODO: Take a list of tags and return a list of note names/ids
 
 
 
 //TODO ROUTING GOES HERE, HOORAY!
 
-// temporary routes: feel free to actually implement
-/*
-app.put('/:tagName/:noteID', function(req, res) {
-    console.log("PUT: " + req.params.tagName + " on note #" + req.params.noteID);
-    res.json(200);
-});
-*/
-
-app.delete('/:tagName/:noteID', function(req, res) {
-    console.log("DELETE: " + req.params.tagName + " from note #" + req.params.tagName);
-    res.json(200);
-});
 
 //Don't put anything after this that isn't already here; these two need to be the end of the file
 var mongoConnectionString = 'mongodb://notetaggerdb:' + process.env.MONGO_PASSWORD + '@ds157742.mlab.com:57742/note-tagger';
