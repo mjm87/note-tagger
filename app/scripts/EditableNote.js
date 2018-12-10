@@ -6,6 +6,7 @@ import '../css/base.css';
 import EditableTagGroup from './EditableTagGroup.js';
 import NoteHeader from './NoteHeader.js';
 import NoteContent from './NoteContent.js';
+import { runInThisContext } from 'vm';
 
 module.exports = React.createClass({
 
@@ -13,17 +14,21 @@ module.exports = React.createClass({
     return {
       id:null, 
       title:"Untitled", 
-      content:""
+      content:"",
+      mounted:false
     };
   },
-  onMountedComponent: function() {
+  componentDidMount: function() {
     $.ajax({
       url: "/notes/" + this.props.noteID,
       type: 'GET',
       dataType:'json'
     })
     .done(function(results){ 
-      console.log("worked: " + results.name + results.contents);
+      this.setState({title:results.name});
+      this.setState({content:results.content});
+      this.setState({mounted: true});
+      console.log("content: " + this.state.content);
     }.bind(this))
     .fail(function(xhr, status, error){
       console.log("failed");
@@ -39,12 +44,16 @@ module.exports = React.createClass({
 
   },
   render: function() {
-    return (
-        <div>
-            <NoteHeader noteID="5" title="Untitled" update={this.updateTitle}/>
-            <NoteContent noteID="5" content="Salut monde" update={this.updateContent}/>
-            <EditableTagGroup noteID="5"/>
-        </div>
-    );
+    if(this.state.mounted) {
+      return (
+          <div>
+              <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle}/>
+              <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent}/>
+              <EditableTagGroup noteID={this.props.noteID} />
+          </div>
+      );
+    } else {
+      return (<div></div>);
+    }
   }
 });
