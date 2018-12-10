@@ -1,14 +1,20 @@
+//Putting a tag on a note
 curl -XPUT 'localhost:3000/5/testtag'
 
+//Removing a tag from a note
 curl -XDELETE 'localhost:3000/5/testtag'
 
+//Deleting a note
 curl -XDELETE 'localhost:3000/notes/5'
 
+//For testing creating a note that doesn't exist yet (i.e. with default tag)
+curl -XPUT -H "Content-type: application/json" -d '{"name":"testNote2","content":"content"}' 'localhost:3000/notes'
 
+//For testing creation of a new note with new tags
+curl -XPUT -H "Content-type: application/json" -d '{"name":"testNote2","content":"content", "tags":[{"name":"tag3"}]}' 'localhost:3000/notes'
 
-
-
-
+//Testing adding a note that already exists (e.g. updating)
+curl -XPUT -H "Content-type: application/json" -d '{"id":"5","name":"testNote2","content":"content"}' 'localhost:3000/notes'
 
 
 
