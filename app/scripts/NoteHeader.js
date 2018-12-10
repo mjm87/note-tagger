@@ -1,9 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
-// TODO: add other imports here
 import '../css/base.css';
-import { Z_ASCII } from 'zlib';
 
 module.exports = React.createClass({
 
