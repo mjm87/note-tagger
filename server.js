@@ -24,13 +24,23 @@ app.use(function(req, res, next) {
     next();
 });
 
-//Get a list of all tags
+//Get a list of all tags or
 app.get('/tags', function(req, res) {
   db.collection("tags").find(
     { },
     {name: true, _id:false}).toArray(function(err, tagNames) {
-        if (err) throw err;
+        if (err) throw (err);
         res.json(tagNames);
+    });
+});
+
+//Get a specific note based on ID
+app.get('/notes/:noteID', function(req, res) {
+  db.collection("notes").find(
+    {id: req.params.noteID},
+    {name: true, _id: false, content: true}).toArray(function(err, nameNContent) {
+      if (err) throw (err);
+      res.json(nameNContent)
     });
 });
 
@@ -154,8 +164,7 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: Take a list of notes as input (JSON) and get the name/id of each
-//TODO: Get/Put the contents/name of selected note (noteID)
+//TODO: Take a list of tags as input (JSON) and get the notes name/id of each
 //TODO: Take a list of tags and return a list of note names/ids
 
 
