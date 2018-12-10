@@ -13,7 +13,7 @@ module.exports = React.createClass({
 
   componentDidMount: function() {
     $.ajax({
-      url: "/" + this.props.noteID + "/tags",
+      url: "/notes/" + this.props.noteID + "/tags",
       type: 'GET'
     })
     .done(function(results){
@@ -30,7 +30,7 @@ module.exports = React.createClass({
     let oldData = this.state.data;
     let newData = oldData.concat({name: tagName});
     $.ajax({
-      url: "/" + this.props.noteID + "/" + tagName,
+      url: "/notes/" + this.props.noteID + "/" + tagName,
       type : 'PUT'
     }).done(function(results) {
       console.log("Added " + tagName + " to Note #" + this.props.noteID);
@@ -47,7 +47,7 @@ module.exports = React.createClass({
     let oldData = this.state.data;
     let newData = oldData.filter((t) => t.name != tagName);
     $.ajax({
-      url: "/" + tagName + "/" + this.props.noteID,
+      url: "/notes/" + this.props.noteID + "/" + tagName,
       type : 'DELETE'
     }).done(function(results) {
         console.log("DONE: " + newData);

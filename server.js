@@ -24,8 +24,8 @@ app.use(function(req, res, next) {
     next();
 });
 
-//CRUD operations related to tags on a note
-app.get('/:noteID/tags', function(req, res) {
+//Get the tags on a note
+app.get('/notes/:noteID/tags', function(req, res) {
   var noteID = req.params.noteID;
   db.collection("notes").findOne(
     {id: noteID},
@@ -35,22 +35,8 @@ app.get('/:noteID/tags', function(req, res) {
     })
 });
 
-app.put('/:noteID/:tagName', function(req, res) {
-  var noteID = req.params.noteID;
-  var tagToAdd = req.params.tagName;
-  //TODO do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
-  db.collection("notes").updateOne(
-    {id: noteID},
-    {$push: {tags: {name: tagToAdd}}},
-    function(err, result) {
-      if (err) throw (err);
-      //res.json(result.tags);              // NOTE: I commented this out so that the ajax call works nicer. I'm not certain we need the resulting tags on a put request??
-      res.json(200);
-    })
-});
-
 //Getting the notes associated with a tag
-app.get('/:tagName/notes', function(req, res) {
+app.get('/tags/:tagName/notes', function(req, res) {
   var tagName = req.params.tagName;
   db.collection("tags").findOne(
     {name: tagName},
@@ -61,6 +47,61 @@ app.get('/:tagName/notes', function(req, res) {
 });
 
 
+//Handling associating tags with notes and vice versa
+app.put('/:collection/:noteID/:tagName', function(req, res) {
+  collectionToQuery = req.params.collection;
+  var noteID = req.params.noteID;
+  var tag = req.params.tagName;
+  if(collectionToQuery === "notes") {
+    //TODO: do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
+    db.collection("notes").updateOne(
+      {id: noteID},
+      {$push: {tags: {name: tag}}},
+      function(err, result) {
+        if (err) throw (err);
+        res.json(200);
+      })
+  }
+  else if(collectionToQuery === "tags") {
+    //TODO: do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
+    db.collection("tags").updateOne(
+      {name: tag},
+      {$push: {notes: {id: noteID}}},
+      function(err, result) {
+        if (err) throw (err);
+        res.json(200);
+      })
+  }
+});
+
+app.delete('/:collection/:noteID/:tagName', function(req, res) {
+  collectionToQuery = req.params.collection;
+  var noteID = req.params.noteID;
+  var tag = req.params.tagName;
+  if(collectionToQuery === "notes") {
+    //Even though this is a delete endpoint, we use the updateOne mongo function to avoid deleting the whole note.
+    db.collection("notes").updateOne(
+      {id: noteID},
+      {$pull: {tags: {name: tag}}},
+      function(err, result) {
+        if (err) throw (err);
+        res.json(200);
+      })
+  }
+  else if(collectionToQuery === "tags") {
+    db.collection("tags").updateOne(
+      {name: tag},
+      {$pull: {notes: {id: noteID}}},
+      function(err, result) {
+        if (err) throw (err);
+        res.json(200);
+      })
+  }
+});
+
+//TODO: Endpoint to get all tags
+//TODO: Take a list of notes as input (JSON) and get the name/id of each
+//TODO: Get the contents/tags/name of selected note
 
 
 
