@@ -17,7 +17,17 @@ module.exports = React.createClass({
     };
   },
   onMountedComponent: function() {
-
+    $.ajax({
+      url: "/notes/" + this.props.noteID,
+      type: 'GET',
+      dataType:'json'
+    })
+    .done(function(results){ 
+      console.log("worked: " + results.name + results.contents);
+    }.bind(this))
+    .fail(function(xhr, status, error){
+      console.log("failed");
+    }.bind(this));
   },
   updateTitle: function(title) {
     this.setState({title:title});
