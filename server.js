@@ -24,6 +24,29 @@ app.use(function(req, res, next) {
     next();
 });
 
+//Get a list of all tags
+app.get('/tags', function(req, res) {
+  db.collection("tags").find(
+    { },
+    {name: true, _id:false}).toArray(function(err, tagNames) {
+        if (err) throw err;
+        res.json(tagNames);
+    });
+});
+
+//TODO: Endpoint to create/delete a note
+app.post('/notes', function(req, res){
+  var tagNames = req.body.tags;
+  if (tagNames.length === 0) {
+    tagNames.append({name: default})
+  }
+  db.collection('notes').insertOne({id: Date.now(), name: req.body.name,
+  content: req.body.content, tags: req.body.tags}, function(err,result) {
+    if (err) throw (err);
+    res.json(200);
+  });
+});
+
 //Get the tags on a note
 app.get('/notes/:noteID/tags', function(req, res) {
   var noteID = req.params.noteID;
@@ -32,7 +55,7 @@ app.get('/notes/:noteID/tags', function(req, res) {
     function(err, result) {
       if (err) throw (err);
       res.json(result.tags);
-    })
+    });
 });
 
 //Getting the notes associated with a tag
@@ -46,7 +69,7 @@ app.get('/tags/:tagName/notes', function(req, res) {
     })
 });
 
-
+//TODO: add logic to ensure that if a tag doesn't exist yet, add it to the tag collection with the note
 //Handling associating tags with notes and vice versa
 app.put('/:collection/:noteID/:tagName', function(req, res) {
   collectionToQuery = req.params.collection;
@@ -74,6 +97,7 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
+//TODO: if a tag is deleted from a note, and that was its only note, delete the tag
 app.delete('/:collection/:noteID/:tagName', function(req, res) {
   collectionToQuery = req.params.collection;
   var noteID = req.params.noteID;
@@ -99,9 +123,11 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: Endpoint to get all tags
+//TODO: Endpoint to create/delete a tag
+//TODO: PUT on note w/ name and contents by id
 //TODO: Take a list of notes as input (JSON) and get the name/id of each
-//TODO: Get the contents/tags/name of selected note
+//TODO: Get/Put the contents/name of selected note (noteID)
+//TODO: Take a list of tags and return a list of note names/ids
 
 
 
