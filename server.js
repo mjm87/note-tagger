@@ -47,20 +47,26 @@ app.get('/notes/:noteID', function(req, res) {
 //Endpoint that creates a note with a given name and content, and with a default tag
 //if none are provided
 app.put('/notes', function(req, res){
-  var tagNames = req.body.tags;
   var newOrOldID = Date.now();
   var defaultTag = "untagged";
-  if (typeof tagNames === "undefined") {
-    tagNames = [{"name": "untagged"}]
-  }
   if (req.body.id) {
     newOrOldID = req.body.id;
   }
-  db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
-  content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
-    if (err) throw (err);
-    res.json(result.value.id);
-  });
+  if (typeof tagNames === "undefined") {
+    var tagNames = [{"name": "untagged"}]
+    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
+    content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
+      if (err) throw (err);
+      res.json(result.value.id);
+    });
+  }
+  else {
+    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
+      content: req.body.content}, {upsert: true}, function(err,result) {
+        if (err) throw (err);
+        res.json(result.value.id);
+    });
+  }
 });
 
 //TODO: check the note's tags to ensure that the tag is deleted if this was its only note
@@ -114,7 +120,9 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
   var noteID = req.params.noteID;
   var tag = req.params.tagName;
   if(collectionToQuery === "notes") {
-    //TODO: do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
+
+
+
     db.collection("notes").updateOne(
       {id: noteID},
       {$push: {tags: {name: tag}}},
@@ -135,13 +143,15 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: if a tag is deleted from a note, and that was its only note, delete the tag
+//Deletes a tag from off a note, or a note from off a tag, depending on the
+//:collection param's value (either "notes" or "tags")
 app.delete('/:collection/:noteID/:tagName', function(req, res) {
   collectionToQuery = req.params.collection;
   var noteID = req.params.noteID;
   var tag = req.params.tagName;
   if(collectionToQuery === "notes") {
-    //Even though this is a delete endpoint, we use the updateOne mongo function to avoid deleting the whole note.
+    //Even though this is a delete endpoint, we use the updateOne mongo function
+    //to avoid deleting the whole note.
     db.collection("notes").updateOne(
       {id: noteID},
       {$pull: {tags: {name: tag}}},
@@ -159,6 +169,18 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
         res.json(200);
       })
   }
+
+  //This actually performs the check and deletes the tag if it no longer would have
+  //note associated with it
+  db.collection("tags").findOne(
+    {name: tag},
+    {notes: true, _id: false}, function(err, notesOfTag) {
+      if (err) throw (err);
+      if (notesOfTag.notes.length === 1) {
+        db.collection("tags").findOneAndDelete(
+         {name: tag}
+        )};
+  });
 });
 
 //TODO: Take a list of tags and return a list of note names/ids
