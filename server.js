@@ -36,11 +36,11 @@ app.get('/tags', function(req, res) {
 
 //Get a specific note based on ID
 app.get('/notes/:noteID', function(req, res) {
-  db.collection("notes").find(
+  db.collection("notes").findOne(
     {id: req.params.noteID},
-    {name: true, _id: false, content: true}).toArray(function(err, nameNContent) {
+    {name: true, _id: false, content: true}, function(err, nameNContent) {
       if (err) throw (err);
-      res.json(nameNContent)
+      res.json(nameNContent);
     });
 });
 
@@ -59,14 +59,11 @@ app.put('/notes', function(req, res){
   db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
   content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
     if (err) throw (err);
-    console.log(result.value.id);
     res.json(result.value.id);
   });
 });
 
-
-
-//TODO: check the note's tags to ensure that the tags are deleted if this was their only note
+//TODO: check the note's tags to ensure that the tag is deleted if this was its only note
 //This endpoint deletes a note or a tag with a given ID or name respectively
 app.delete('/:collection/:toBeDeleted', function(req, res){
     var collectionToQuery = req.params.collection
@@ -164,7 +161,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: Take a list of tags as input (JSON) and get the notes name/id of each
 //TODO: Take a list of tags and return a list of note names/ids
 
 
