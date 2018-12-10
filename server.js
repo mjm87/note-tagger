@@ -51,18 +51,18 @@ app.put('/notes', function(req, res){
   var tagNames = [{"name": "untagged"}]
   if (req.body.id) {
     newOrOldID = req.body.id;
-    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
-      content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
+    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {name: req.body.name,
+      content: req.body.content}}, function(err,result) {
         if (err) throw (err);
         res.json(result.value.id);
       });
   }
   else {
-    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
-      content: req.body.content}, {upsert: true}, function(err,result) {
+    db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {id: newOrOldID, name: req.body.name,
+      content: req.body.content, tags: tagNames}}, {upsert: true}, function(err,result) {
         if (err) throw (err);
         res.json(result.value.id);
-    });
+      });
   }
 });
 
