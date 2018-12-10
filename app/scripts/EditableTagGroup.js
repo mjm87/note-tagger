@@ -64,9 +64,11 @@ module.exports = React.createClass({
 
     var removeTag = this.removeTag;       // passing removeTag function into the mapping below (using closure???)
     var tagList = this.state.data.map(function(tag){
-      return (
-        <Tag handleClick={removeTag} tagName={tag.name} tagType="editableTag" />
-      );
+      if(tag.name != "untagged") {
+        return (
+          <Tag handleClick={removeTag} tagName={tag.name} tagType="editableTag" />
+        );
+      }
     });
 
     return (
