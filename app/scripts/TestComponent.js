@@ -3,18 +3,15 @@ import $ from 'jquery';
 
 import '../css/base.css';
 
-import EditableTagGroup from './EditableTagGroup.js';
+import EditableNote from './EditableNote.js';
 
 module.exports = React.createClass({
 
-    handleClick : function () {
-        Console.log("Hello");
-    },
-
   render: function() {
-
     return (
-        <EditableTagGroup noteID="5"/>
+        <EditableNote noteID="5"/>
     );
-      }
+  }
 });
+
+// <EditableTagGroup noteID="5"/>

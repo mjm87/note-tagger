@@ -34,5 +34,8 @@ module.exports = React.createClass({
                 <button type="button" onClick={this.expand} className="TagCreator" > + </button>
             );
         };
+
+        //TODO: use ESC to close out tag-entry
+        // or an auto-disappear
     }
 });
