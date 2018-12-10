@@ -48,17 +48,14 @@ app.get('/notes/:noteID', function(req, res) {
 //if none are provided
 app.put('/notes', function(req, res){
   var newOrOldID = Date.now();
-  var defaultTag = "untagged";
+  var tagNames = [{"name": "untagged"}]
   if (req.body.id) {
     newOrOldID = req.body.id;
-  }
-  if (typeof tagNames === "undefined") {
-    var tagNames = [{"name": "untagged"}]
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
-    content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
-      if (err) throw (err);
-      res.json(result.value.id);
-    });
+      content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
+        if (err) throw (err);
+        res.json(result.value.id);
+      });
   }
   else {
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
