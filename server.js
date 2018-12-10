@@ -34,17 +34,48 @@ app.get('/tags', function(req, res) {
     });
 });
 
-//TODO: Endpoint to create/delete a note
-app.post('/notes', function(req, res){
+//Endpoint that creates a note with a given name and content, and with a default tag
+//if none are provided
+app.put('/notes', function(req, res){
   var tagNames = req.body.tags;
-  if (tagNames.length === 0) {
-    tagNames.append({name: default})
+  var newOrOldID = Date.now();
+  var defaultTag = "untagged";
+  if (typeof tagNames === "undefined") {
+    tagNames = [{"name": "untagged"}]
   }
-  db.collection('notes').insertOne({id: Date.now(), name: req.body.name,
-  content: req.body.content, tags: req.body.tags}, function(err,result) {
+  if (req.body.id) {
+    newOrOldID = req.body.id;
+  }
+  db.collection('notes').findOneAndUpdate({id: newOrOldID}, {id: newOrOldID, name: req.body.name,
+  content: req.body.content, tags: tagNames}, {upsert: true}, function(err,result) {
     if (err) throw (err);
-    res.json(200);
+    console.log(result.value.id);
+    res.json(result.value.id);
   });
+});
+
+
+
+//TODO: check the note's tags to ensure that the tags are deleted if this was their only note
+//This endpoint deletes a note or a tag with a given ID or name respectively
+app.delete('/:collection/:toBeDeleted', function(req, res){
+    var collectionToQuery = req.params.collection
+    if(collectionToQuery === "tags"){
+      db.collection("tags").findOneAndDelete(
+        {name: req.params.toBeDeleted},
+        function(err, result) {
+          if (err) throw (err);
+          res.json(200);
+        });
+    }
+    else if(collectionToQuery === "notes"){
+      db.collection("notes").findOneAndDelete(
+        {id: req.params.toBeDeleted},
+        function(err, result) {
+          if (err) throw (err);
+          res.json(200);
+        });
+    }
 });
 
 //Get the tags on a note
@@ -123,8 +154,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   }
 });
 
-//TODO: Endpoint to create/delete a tag
-//TODO: PUT on note w/ name and contents by id
 //TODO: Take a list of notes as input (JSON) and get the name/id of each
 //TODO: Get/Put the contents/name of selected note (noteID)
 //TODO: Take a list of tags and return a list of note names/ids
@@ -133,18 +162,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 
 //TODO ROUTING GOES HERE, HOORAY!
 
-// temporary routes: feel free to actually implement
-/*
-app.put('/:tagName/:noteID', function(req, res) {
-    console.log("PUT: " + req.params.tagName + " on note #" + req.params.noteID);
-    res.json(200);
-});
-*/
-
-app.delete('/:tagName/:noteID', function(req, res) {
-    console.log("DELETE: " + req.params.tagName + " from note #" + req.params.tagName);
-    res.json(200);
-});
 
 //Don't put anything after this that isn't already here; these two need to be the end of the file
 var mongoConnectionString = 'mongodb://notetaggerdb:' + process.env.MONGO_PASSWORD + '@ds157742.mlab.com:57742/note-tagger';

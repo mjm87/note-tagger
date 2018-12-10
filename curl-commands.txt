@@ -1,0 +1,28 @@
+curl -XPUT 'localhost:3000/5/testtag'
+
+curl -XDELETE 'localhost:3000/5/testtag'
+
+curl -XDELETE 'localhost:3000/notes/5'
+
+
+
+
+
+
+
+
+
+
+
+{"name": "testNote",
+    "content": "empty",
+    "id": "5",
+    "tags": [
+        {
+            "name": "tag1"
+        },
+        {
+            "name": "tag3"
+        }
+    ]
+}
