@@ -9,12 +9,12 @@ module.exports = React.createClass({
     return ({ notes: [] , mounted: false});
   },
   componentDidMount() {
-    var tags = {tags: ["tag1", "tag3"]};
+    var tags = {tags: [{name:"tag1"}, {name:"tag3"}]};
     $.ajax({
       url: "/filteredNotes",
-      type: 'GET',
+      type: 'POST',
       data: tags,
-      contentType: 'application/json; charset=utf-8',
+      //contentType: 'application/json; charset=utf-8',
       dataType: 'json'
     })
       .done(function (results) {
