@@ -173,10 +173,14 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
     {name: tag},
     {notes: true, _id: false}, function(err, notesOfTag) {
       if (err) throw (err);
-      if (notesOfTag.notes.length === 1) {
-        db.collection("tags").findOneAndDelete(
-         {name: tag}
-        )};
+      //NOTE: added check if notesOfTag is null SINCE during testing my build was crashing due to notes not existing on notesOfTag
+      // I suspect this problem will be resolved once the tags collection is updated upon tag insertion I think...
+      if(notesOfTag != null) {
+        if (notesOfTag.notes.length === 1) {
+          db.collection("tags").findOneAndDelete(
+          {name: tag}
+          )};
+      }
   });
 });
 
