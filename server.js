@@ -66,7 +66,7 @@ app.put('/notes', function(req, res){
   }
 });
 
-//This endpoint deletes a note or a tag with a given ID or name respectively
+//This endpoint deletes a note with a given ID
 app.delete('/notes/:toBeDeleted', function(req, res){
   db.collection("notes").findOneAndDelete(
     {id: req.params.toBeDeleted},
@@ -195,8 +195,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
     {name: tag},
     {notes: true, _id: false}, function(err, notesOfTag) {
       if (err) throw (err);
-      //NOTE: added check if notesOfTag is null SINCE during testing my build was crashing due to notes not existing on notesOfTag
-      // I suspect this problem will be resolved once the tags collection is updated upon tag insertion I think...
       if(notesOfTag != null) {
         if (notesOfTag.notes.length === 1) {
           db.collection("tags").findOneAndDelete(
@@ -209,8 +207,9 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 //This endpoint filters notes depending on a passed in tags array
 app.get('/filteredNotes', function(req, res) {
   var noteSet = new Set([])
-  if (req.body.tags.length > 0) {
-    for(tag in req.body.tags) {
+  var tags = urlParams.getAll("tags")
+  if (tags.length > 0) {
+    for(tag in tags) {
       db.collection("tags").findOne(
         {name: tag},
         {_id: false, notes: true},
