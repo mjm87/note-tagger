@@ -220,6 +220,7 @@ app.post('/filteredNotes', function(req, res) {
         });
       }
   }
+  console.log(noteSet);
   else {
     db.collection("tags").findOne(
       {name: "untagged"},
@@ -241,6 +242,7 @@ app.post('/filteredNotes', function(req, res) {
         nameIDSet.add(nameIDPair);
     });
   }
+  console.log(nameIDSet);
   res.json(nameIDSet);
 });
 
