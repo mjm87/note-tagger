@@ -48,20 +48,32 @@ app.get('/notes/:noteID', function(req, res) {
 //if none are provided
 app.put('/notes', function(req, res){
   var newOrOldID = String(Date.now());
-  var tagNames = [{"name": "untagged"}]
+  var tagNames = {"name": "untagged"}
   if (req.body.id) {
     newOrOldID = req.body.id;
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {name: req.body.name,
       content: req.body.content}}, function(err,result) {
         if (err) throw (err);
-        res.json(result.value.id);
+        res.json(newOrOldID);
       });
   }
   else {
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {id: newOrOldID, name: req.body.name,
       content: req.body.content, tags: tagNames}}, {upsert: true}, function(err,result) {
         if (err) throw (err);
-        res.json(result.value.id);
+        db.collection("tags").findOne(
+          {name: tagNames.name},
+          function (err, result2) {
+            if (err) throw (err);
+              db.collection("tags").updateOne(
+                {name: tagNames.name},
+                {$push: {notes: {id: newOrOldID}}},
+                {upsert: true},
+                function(err, result) {
+                  if (err) throw (err);
+                  res.json(newOrOldID);
+              });
+          });
       });
   }
 });
@@ -135,7 +147,7 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
         if (!result) {
           db.collection("notes").updateOne(
             {id: noteID},
-            {$push: {tags: [{name: tag}]}},
+            {$push: {tags: {name: tag}}},
             function(err, result) {
               if (err) throw (err);
               res.json(200);
