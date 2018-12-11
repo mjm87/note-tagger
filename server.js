@@ -207,7 +207,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 //This endpoint filters notes depending on a passed in tags array
 app.post('/filteredNotes', function(req, res) {
   var noteSet = new Set([])
-  var tags = urlParams.getAll("tags")
   if (req.body.tags.length > 0) {
     for(tag in req.body.tags) {
       db.collection("tags").findOne(
