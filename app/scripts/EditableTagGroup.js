@@ -81,7 +81,7 @@ module.exports = React.createClass({
     var tagList = this.state.data.map(function (tag) {
       if (tag.name != "untagged") {
         return (
-          <Tag handleClick={removeTag} tagName={tag.name} tagType="editableTag" />
+          <Tag handleClick={removeTag} tagName={tag.name} tagType="EditableTag" />
         );
       }
     });

@@ -101,7 +101,7 @@ module.exports = React.createClass({
         );
       });
       return (
-        <div className="Note Selector">
+        <div className="NoteSelector">
           {notesList}
         </div>
       );
