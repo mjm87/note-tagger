@@ -206,6 +206,7 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 
 //This endpoint filters notes depending on a passed in tags array
 app.get('/filteredNotes', function(req, res) {
+  var urlParams = new URLSearchParams(window.location.search);
   var noteSet = new Set([])
   var tags = urlParams.getAll("tags")
   if (tags.length > 0) {
