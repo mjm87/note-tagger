@@ -47,7 +47,7 @@ app.get('/notes/:noteID', function(req, res) {
 //Endpoint that creates a note with a given name and content, and with a default tag
 //if none are provided
 app.put('/notes', function(req, res){
-  var newOrOldID = Date.now();
+  var newOrOldID = String(Date.now());
   var tagNames = [{"name": "untagged"}]
   if (req.body.id) {
     newOrOldID = req.body.id;
@@ -66,26 +66,32 @@ app.put('/notes', function(req, res){
   }
 });
 
-//TODO: check the note's tags to ensure that the tag is deleted if this was its only note
 //This endpoint deletes a note or a tag with a given ID or name respectively
-app.delete('/:collection/:toBeDeleted', function(req, res){
-    var collectionToQuery = req.params.collection
-    if(collectionToQuery === "tags"){
-      db.collection("tags").findOneAndDelete(
-        {name: req.params.toBeDeleted},
-        function(err, result) {
-          if (err) throw (err);
-          res.json(200);
-        });
-    }
-    else if(collectionToQuery === "notes"){
-      db.collection("notes").findOneAndDelete(
-        {id: req.params.toBeDeleted},
-        function(err, result) {
-          if (err) throw (err);
-          res.json(200);
-        });
-    }
+app.delete('/notes/:toBeDeleted', function(req, res){
+  db.collection("notes").findOneAndDelete(
+    {id: req.params.toBeDeleted},
+    function(err, result) {
+      if (err) throw (err);
+      for(tag in result) {
+        db.collection("tags").findOne(
+          {name: tag, notes: {id: {$eq: result.id}}},
+          function (err, result2) {
+            if (err) throw (err);
+            if (result2.id.length > 1) {
+              db.collection("tags").updateOne(
+                {name: tag},
+                {$pull: {notes: [{id: req.params.id}]}},
+                function(err, result3) {
+                  if (err) throw (err);
+                  res.json(200);
+                });
+              }
+              else {
+                res.json(200);
+              }
+          });
+      }
+  });
 });
 
 //Get the tags on a note
@@ -110,33 +116,49 @@ app.get('/tags/:tagName/notes', function(req, res) {
     })
 });
 
-//TODO: add logic to ensure that if a tag doesn't exist yet, add it to the tag collection with the note
 //Handling associating tags with notes and vice versa
 app.put('/:collection/:noteID/:tagName', function(req, res) {
-  collectionToQuery = req.params.collection;
+  var collectionToQuery = req.params.collection;
   var noteID = req.params.noteID;
   var tag = req.params.tagName;
   if(collectionToQuery === "notes") {
-
-
-
-    db.collection("notes").updateOne(
-      {id: noteID},
-      {$push: {tags: {name: tag}}},
-      function(err, result) {
+    db.collection("notes").findOne(
+      {id: noteID, tags: {name: {$eq: tag}}},
+      function (err, result) {
         if (err) throw (err);
-        res.json(200);
-      })
+        if (!result) {
+          db.collection("notes").updateOne(
+            {id: noteID},
+            {$push: {tags: [{name: tag}]}},
+            function(err, result) {
+              if (err) throw (err);
+              res.json(200);
+          });
+        }
+        else {
+          res.json(200);
+        }
+      });
   }
   else if(collectionToQuery === "tags") {
-    //TODO: do a query to make sure tagToAdd doesn't already exist on the note, then proceed with the push
-    db.collection("tags").updateOne(
-      {name: tag},
-      {$push: {notes: {id: noteID}}},
-      function(err, result) {
+    db.collection("tags").findOne(
+      {name: tag, notes: {id: {$eq: noteID}}},
+      function (err, result) {
         if (err) throw (err);
-        res.json(200);
-      })
+        if (!result) {
+          db.collection("tags").updateOne(
+            {name: tag},
+            {$push: {notes: [{id: noteID}]}},
+            {upsert: true},
+            function(err, result) {
+              if (err) throw (err);
+              res.json(200);
+          });
+        }
+        else {
+          res.json(200);
+        }
+      });
   }
 });
 
@@ -178,21 +200,38 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
       if(notesOfTag != null) {
         if (notesOfTag.notes.length === 1) {
           db.collection("tags").findOneAndDelete(
-          {name: tag}
+            {name: tag}
           )};
       }
   });
 });
 
-//TODO: Take a list of tags and return a list of note names/ids
-
-
-// Temporary route that returns all the notes: regardless of tags
-// TODO: actually add the filtering necc. to make this useful
+//This endpoint filters notes depending on a passed in tags array
 app.get('/filteredNotes', function(req, res) {
-  db.collection("notes").find({}, {name:1, id:1, _id:0}).toArray(function(err, results){
-    res.json(results);
-  });
+  var noteSet = new Set([])
+  //TODO: if no tags are passed in, return the notes that have the "unfiltered" tag
+  for(tag in res.body.tags) {
+    db.collection("tags").findOne(
+      {name: tag},
+      {_id: false, notes: true},
+      function(err, notesOfThisTag){
+        if (err) throw (err);
+        for(note in notesOfThisTag) {
+          noteSet.add(note.id);
+        }
+    });
+  }
+  var nameIDSet = new Set([]);
+  for(note in noteSet){
+    db.collection("notes").findOne(
+      {id: note},
+      {name: true, id: true, _id: false},
+      function(err, nameIDPair) {
+        if (err) throw (err)
+        nameIDSet.add(nameIDPair);
+    });
+  }
+  res.json(nameIDSet);
 });
 
 //TODO ROUTING GOES HERE, HOORAY!
