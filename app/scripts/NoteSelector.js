@@ -6,26 +6,71 @@ import '../css/base.css';
 module.exports = React.createClass({
 
   getInitialState() {
-    return ({ notes: [] , mounted: false});
+    return ({ notes: [] ,  mounted: false});
   },
   componentDidMount() {
-    var tags = {tags: [{name:"tag1"}, {name:"tag3"}]};
+    for(let t in this.props.tags) {
+      let tag = this.props.tags[t];
+      this.performNastyAjaxCalls(tag);
+    }
+    this.setState({ mounted: true})
+  },
+  componentDidUpdate: function(oldProps, oldState) {
+    //checking if we added a tag
+    if(this.props.tags.length > oldProps.tags.length) {
+      //finding the tag that was added
+      for(let t in this.props.tags) {
+        let tag = this.props.tags[t];
+        if(!oldProps.tags.includes(tag)) {
+          performNastyAjaxCalls(tag);
+        }
+      }
+    }
+    // checking if we removed a tag
+    if(this.props.tags.length < oldProps.tags.length) {
+      //finding the tag that was removed
+      for(let t in oldProps.tags) {
+        let tag = oldProps.tags[t];
+        if(!this.props.tags.includes(tag)){
+          performNastyAjaxCalls(tag);
+        }
+      }
+    }
+  },
+  performNastyAjaxCalls: function(tagName) {
     $.ajax({
-      url: "/filteredNotes",
-      type: 'POST',
-      data: tags,
-      //contentType: 'application/json; charset=utf-8',
+      url: "/tags/" + tagName + "/notes",
+      type: 'GET',
       dataType: 'json'
     })
       .done(function (results) {
-        console.log("saved: " + JSON.stringify(results));
-        this.setState({ notes: results });
-        this.setState({ mounted: true})
+
+        for(let r in results) {
+            let note = results[r];
+
+            $.ajax({
+              url: "/notes/" + note.id,    //todo: maybe note.id
+              type: 'GET',
+              dataType: 'json'              
+            })
+              .done(function(note){
+                  //todo: filter based off of note.tags
+                  var currentNotes = this.state.notes;
+                  currentNotes.push({id:note.id, name:note.name});
+                  this.setState({notes: currentNotes});
+                  console.log("Added note #" + note.id + " for ");
+              }.bind(this))
+              .fail(function(xhr, status, error){
+                  console.log("failed");
+              }.bind(this))
+        }
+
       }.bind(this))
       .fail(function (xhr, status, error) {
-        console.log("failed to save");
+        console.log("failed to retrieve notes from selected tag");
       }.bind(this));
   },
+
   render: function () {
     if(this.state.mounted) {
       var Select = this.props.onSelect;

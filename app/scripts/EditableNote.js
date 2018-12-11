@@ -32,8 +32,8 @@ module.exports = React.createClass({
         console.log("failed");
       }.bind(this));
   },
-  componentDidUpdate: function(prevProps, prevState) {
-    if(this.props.noteID !== prevProps.noteID) {
+  componentDidUpdate: function (prevProps, prevState) {
+    if (this.props.noteID !== prevProps.noteID) {
       $.ajax({
         url: "/notes/" + this.props.noteID,
         type: 'GET',
@@ -45,7 +45,7 @@ module.exports = React.createClass({
         }.bind(this))
         .fail(function (xhr, status, error) {
           console.log("failed");
-        }.bind(this)); 
+        }.bind(this));
     }
   },
   updateTitle: function (title) {

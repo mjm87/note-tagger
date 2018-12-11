@@ -32,7 +32,7 @@ module.exports = React.createClass({
       )
     }.bind(this));
     return (
-      <div className="TODO:">
+      <div className="TagSelector">
         {selectableTags}
       </div>
     );

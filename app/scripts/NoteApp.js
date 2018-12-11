@@ -9,7 +9,7 @@ import TagSelector from './TagSelector.js';
 
 module.exports = React.createClass({
   getInitialState: function () {
-    return ({ selectedNote: null });
+    return ({ selectedNote: null , selectedTags: ["tag1", "tag3"]});
   },
   componentDidMount: function () {
     // TODO: pull in a note?
@@ -26,8 +26,8 @@ module.exports = React.createClass({
     }.bind(this);
     return (
       <div className="NoteApp">
-        <TagSelector />
-        <NoteSelector onSelect={this.selectNote} />
+        <TagSelector/>
+        <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} />
         {editableNote()}
       </div>
     );
