@@ -210,7 +210,7 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 app.get('/filteredNotes', function(req, res) {
   var noteSet = new Set([])
   //TODO: if no tags are passed in, return the notes that have the "unfiltered" tag
-  for(tag in res.body.tags) {
+  for(tag in req.body.tags) {
     db.collection("tags").findOne(
       {name: tag},
       {_id: false, notes: true},

@@ -6,39 +6,44 @@ import '../css/base.css';
 module.exports = React.createClass({
 
   getInitialState() {
-    return ({ notes: [] });
+    return ({ notes: [] , mounted: false});
   },
   componentDidMount() {
     $.ajax({
       url: "/filteredNotes",
       type: 'GET',
-      //data: {tags: ["tag1", "tag42"]},
+      data: {tags: []},
       dataType: 'json'
     })
       .done(function (results) {
         console.log("saved: " + JSON.stringify(results));
         this.setState({ notes: results });
+        this.setState({ mounted: true})
       }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("failed to save");
       }.bind(this));
   },
   render: function () {
-    var Select = this.props.onSelect;
-    var notesList = this.state.notes.map(function(note) {
-      var selectThisNote = function(){
-        Select(note.id);
-      }
+    if(this.state.mounted) {
+      var Select = this.props.onSelect;
+      var notesList = this.state.notes.map(function(note) {
+        var selectThisNote = function(){
+          Select(note.id);
+        }
+        return (
+          <li key={note.id}>
+          <button onClick={selectThisNote}>{note.name}</button>
+          </li>
+        );
+      });
       return (
-        <li key={note.id}>
-        <button onClick={selectThisNote}>{note.name}</button>
-        </li>
+        <div className="Note Selector">
+          {notesList}
+        </div>
       );
-    });
-    return (
-      <div className="Note Selector">
-        {notesList}
-      </div>
-    );
+    } else {
+      return <div/>
+    }
   }
 });
