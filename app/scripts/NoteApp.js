@@ -5,6 +5,7 @@ import '../css/base.css';
 
 import EditableNote from './EditableNote.js';
 import NoteSelector from './NoteSelector.js';
+import TagSelector from './TagSelector.js';
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -25,6 +26,7 @@ module.exports = React.createClass({
     }.bind(this);
     return (
       <div className="NoteApp">
+        <TagSelector/>
         <NoteSelector onSelect={this.selectNote} />
         { editableNote() }
       </div>
