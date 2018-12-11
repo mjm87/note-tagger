@@ -22,13 +22,11 @@ module.exports = React.createClass({
         console.log("Couldn't find any tags");
       }.bind(this));
   },
-  Select: function(tag) {
-    console.log('selected ' + tag);
-  },
   render: function() {
+    
     var selectableTags = this.state.tags.map(function(tag) {
       return (
-        <Tag handleClick={this.Select} tagName={tag.name} tagType="SelectableTag" />
+        <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectableTag" />
       )
     }.bind(this));
     return (
