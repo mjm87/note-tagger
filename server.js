@@ -187,6 +187,13 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 //TODO: Take a list of tags and return a list of note names/ids
 
 
+// Temporary route that returns all the notes: regardless of tags
+// TODO: actually add the filtering necc. to make this useful
+app.get('/filteredNotes', function(req, res) {
+  db.collection("notes").find({}, {name:1, id:1, _id:0}).toArray(function(err, results){
+    res.json(results);
+  });
+});
 
 //TODO ROUTING GOES HERE, HOORAY!
 
