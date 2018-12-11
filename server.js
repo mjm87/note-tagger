@@ -38,9 +38,9 @@ app.get('/tags', function(req, res) {
 app.get('/notes/:noteID', function(req, res) {
   db.collection("notes").findOne(
     {id: req.params.noteID},
-    {name: true, _id: false, content: true}, function(err, nameNContent) {
+    {name: true, _id: false, content: true, tags: true}, function(err, nameNContentNTags) {
       if (err) throw (err);
-      res.json(nameNContent);
+      res.json(nameNContentNTags);
     });
 });
 
@@ -72,7 +72,7 @@ app.delete('/notes/:toBeDeleted', function(req, res){
     {id: req.params.toBeDeleted},
     function(err, result) {
       if (err) throw (err);
-      for(tag in result) {
+      for(let tag in result) {
         db.collection("tags").findOne(
           {name: tag, notes: {id: {$eq: result.id}}},
           function (err, result2) {
@@ -80,7 +80,7 @@ app.delete('/notes/:toBeDeleted', function(req, res){
             if (result2.id.length > 1) {
               db.collection("tags").updateOne(
                 {name: tag},
-                {$pull: {notes: [{id: req.params.id}]}},
+                {$pull: {notes: [{id: req.params.toBeDeleted}]}},
                 function(err, result3) {
                   if (err) throw (err);
                   res.json(200);
@@ -110,6 +110,7 @@ app.get('/tags/:tagName/notes', function(req, res) {
   var tagName = req.params.tagName;
   db.collection("tags").findOne(
     {name: tagName},
+    {_id: false, notes: true},
     function(err, result) {
       if (err) throw (err);
       res.json(result.notes);
@@ -204,45 +205,52 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   });
 });
 
-//This endpoint filters notes depending on a passed in tags array
-app.post('/filteredNotes', function(req, res) {
-  var noteSet = new Set([])
-  if (req.body.tags.length > 0) {
-    for(tag in req.body.tags) {
-      db.collection("tags").findOne(
-        {name: tag.name},
-        {_id: false, notes: true},
-        function(err, notesOfThisTag){
-          if (err) throw (err);
-          for(note in notesOfThisTag) {
-            noteSet.add(note.id);
-          }
-        });
-      }
-  }
-  else {
-    db.collection("tags").findOne(
-      {name: "untagged"},
-      {_id: false, notes: true},
-      function(err, notesOfThisTag){
-        if (err) throw (err);
-        for(note in notesOfThisTag) {
-          noteSet.add(note.id);
-        }
-      });
-  }
-  var nameIDSet = new Set([]);
-  for(note in noteSet){
-    db.collection("notes").findOne(
-      {id: note},
-      {name: true, id: true, _id: false},
-      function(err, nameIDPair) {
-        if (err) throw (err)
-        nameIDSet.add(nameIDPair);
-    });
-  }
-  res.json(nameIDSet);
-});
+// //This endpoint filters notes depending on a passed in tags array
+// app.post('/filteredNotes', function(req, res) {
+//   var noteSet = new Set([])
+//   if (req.body.tags.length > 0) {
+//     for(let tag in req.body.tags) {
+//       db.collection("tags").findOne(
+//         {name: req.body.tags[tag].name},
+//         {_id: false, notes: true},
+//         function(err, notesOfThisTag){
+//           if (err) throw (err);
+//           for(note in notesOfThisTag.notes) {
+//             noteSet.add(notesOfThisTag.notes[note].id);
+//           }
+//           //If we are on the last iteration of our asynchronous calls
+//           console.log(tag)
+//           if (tag === req.body.tags.length - 1) {
+//             var nameIDSet = new Set([]);
+//             for(let note in noteSet){
+//               db.collection("notes").findOne(
+//                 {id: note},
+//                 {name: true, id: true, _id: false},
+//                 function(err, nameIDPair) {
+//                   if (err) throw (err)
+//                   nameIDSet.add(nameIDPair);
+//                 });
+//                 if(note === noteSet.size - 1) {
+//                     console.log(nameIDSet)
+//                     res.json(nameIDSet);
+//                 }
+//               }
+//             };
+//           })
+//         }
+//       }
+//       else {
+//         db.collection("tags").findOne(
+//           {name: "untagged"},
+//           {_id: false, notes: true},
+//           function(err, notesOfThisTag){
+//             if (err) throw (err);
+//             for(note in notesOfThisTag) {
+//               noteSet.add(note.id);
+//             }
+//           });
+//         }
+// });
 
 //TODO ROUTING GOES HERE, HOORAY!
 
