@@ -9,7 +9,7 @@ import TagSelector from './TagSelector.js';
 
 module.exports = React.createClass({
   getInitialState: function () {
-    return ({ selectedNote: null , selectedTags: ["tag1", "tag3"]});
+    return ({ selectedNote: null , selectedTags: ["tag1"]});
   },
   componentDidMount: function () {
     // TODO: pull in a note?
