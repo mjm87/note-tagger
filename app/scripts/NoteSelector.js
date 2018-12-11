@@ -12,6 +12,7 @@ module.exports = React.createClass({
     $.ajax({
       url: "/filteredNotes",
       type: 'GET',
+      //data: {tags: ["tag1", "tag42"]},
       dataType: 'json'
     })
       .done(function (results) {

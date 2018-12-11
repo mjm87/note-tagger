@@ -1,7 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
 
-// TODO: add other imports here
 import '../css/base.css';
 
 module.exports = React.createClass({
@@ -12,20 +11,23 @@ module.exports = React.createClass({
   componentDidMount: function() {
     this.setState({text: this.props.content});
   },
+  componentDidUpdate: function(oldProps, oldState) {
+    if(this.props.content !== oldProps.content) {
+      this.setState({text: this.props.content});
+    }
+  },
   saveContent: function() {
     this.props.update(this.state.text);  
-    console.log("on blur ");
   },
   handleTextChanged: function(e) {
     this.setState({text: e.target.value});
   },
   render: function() {
-    console.log(this.props.content);
     return (
       <div className="CommentContent">
         <textarea
           type="input" 
-          defaultValue={this.props.content} 
+          value={this.state.text} 
           autoFocus 
           onChange={this.handleTextChanged} 
           onBlur={this.saveContent}
@@ -34,6 +36,3 @@ module.exports = React.createClass({
     );
   }
 });
-
-
-//TODO: consider not autofocusing in some cases
