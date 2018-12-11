@@ -140,6 +140,7 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
   var noteID = req.params.noteID;
   var tag = req.params.tagName;
   if(collectionToQuery === "notes") {
+    //TODO: refactor to a findOneAndUpdate with upsert: true
     db.collection("notes").findOne(
       {id: noteID, tags: {name: {$eq: tag}}},
       function (err, result) {
@@ -150,7 +151,6 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
             {$push: {tags: {name: tag}}},
             function(err, result) {
               if (err) throw (err);
-              res.json(200);
           });
         }
         else {
@@ -158,26 +158,17 @@ app.put('/:collection/:noteID/:tagName', function(req, res) {
         }
       });
   }
-  else if(collectionToQuery === "tags") {
-    db.collection("tags").findOne(
-      {name: tag, notes: {id: {$eq: noteID}}},
+  //Hacks
+  if(collectionToQuery === "notes") {
+    db.collection("tags").findOneAndUpdate(
+      {name: tag},
+      {$push: {notes: {id: noteID}}},
+      {upsert: true},
       function (err, result) {
         if (err) throw (err);
-        if (!result) {
-          db.collection("tags").updateOne(
-            {name: tag},
-            {$push: {notes: [{id: noteID}]}},
-            {upsert: true},
-            function(err, result) {
-              if (err) throw (err);
-              res.json(200);
-          });
-        }
-        else {
-          res.json(200);
-        }
-      });
-  }
+          res.json(200)
+        });
+      };
 });
 
 //Deletes a tag from off a note, or a note from off a tag, depending on the
