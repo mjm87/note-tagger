@@ -27,8 +27,10 @@ module.exports = React.createClass({
     return (
       <div className="NoteApp">
         <TagSelector/>
+        <div className="NoteArea">
         <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} />
         {editableNote()}
+      </div>
       </div>
     );
   }
