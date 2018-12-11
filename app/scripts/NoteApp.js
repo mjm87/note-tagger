@@ -8,27 +8,27 @@ import NoteSelector from './NoteSelector.js';
 import TagSelector from './TagSelector.js';
 
 module.exports = React.createClass({
-  getInitialState: function() {
-    return ({selectedNote: null});
+  getInitialState: function () {
+    return ({ selectedNote: null });
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     // TODO: pull in a note?
   },
   selectNote: function (id) {
-    this.setState({selectedNote:id});
+    this.setState({ selectedNote: id });
   },
-  render: function() {
-    var editableNote = function(){
-      if(this.state.selectedNote != null)
+  render: function () {
+    var editableNote = function () {
+      if (this.state.selectedNote != null)
         return (
           <EditableNote noteID={this.state.selectedNote} />
         );
     }.bind(this);
     return (
       <div className="NoteApp">
-        <TagSelector/>
+        <TagSelector />
         <NoteSelector onSelect={this.selectNote} />
-        { editableNote() }
+        {editableNote()}
       </div>
     );
   }
