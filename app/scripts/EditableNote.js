@@ -77,7 +77,7 @@ module.exports = React.createClass({
     console.log("props: " + this.props.noteID);
     if (this.state.mounted) {
       return (
-        <div>
+        <div className="EditableNote">
           <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle} />
           <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />
           <EditableTagGroup noteID={this.props.noteID} />
