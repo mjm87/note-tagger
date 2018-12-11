@@ -1,10 +1,11 @@
 body {
-  background: #fff;
+  background: ghostwhite;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.7;
   margin: 0;
   padding: 30px;
+  display: flex;
 }
 
 a {
@@ -61,14 +62,80 @@ ul {
 /* custom stuff */
 
 
-.editableTag, .TagCreator {
+.EditableTag, .TagCreator {
   background: lightblue;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   border: 1px solid black;
   padding: 3px;
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 button:hover{
   box-shadow: 0 5px 10px 0 rgba(0,0,0,0.24), 0 1px 5px 0 rgba(0,0,0,0.19)
+}
+
+button:active{
+  transform: translateY(1px);
+}
+
+button{
+  cursor: pointer;
+}
+
+.NoteArea{
+  margin-top: 20px;
+}
+
+.NoteArea{
+  display: flex;
+}
+
+.EditableNote{
+  padding-left: 30px;
+}
+
+.CommentContent>textarea{
+  width: 35em;
+  height: 25em;
+}
+
+.NoteSelector>li{
+    display: block;
+}
+.NoteSelector>li>button{
+  background-color: cornflowerblue;
+  border-color: cornflowerblue;
+  transition-duration: 0.4s;
+}
+.NoteSelector>li>button:hover{
+  background-color: royalblue;
+  border-color: royalblue;
+  color: white;
+}
+
+.SelectedNote{
+  background-color: royalblue;
+  border-color: royalblue;
+  color: white;
+}
+
+.SelectableTag {
+  background-color: white;
+  border-color: #2196F3;
+  color: black;
+  transition-duration: 0.4s;
+}
+.SelectableTag:hover {
+  background: #2196F3;
+  color: white;
+}
+
+.SelectedTag{
+  background-color: #2193f3;
+  color: white;
+}
+.SelectedTag:hover{
+  background-color: white;
+  color: black;
 }
