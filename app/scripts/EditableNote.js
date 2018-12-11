@@ -41,7 +41,6 @@ module.exports = React.createClass({
     this.setState({content:content});
   },
   save: function() {
-    console.log(JSON.stringify(this.state));
     var note = {
       id: this.props.noteID,
       name: this.state.title,
@@ -60,7 +59,7 @@ module.exports = React.createClass({
       console.log("failed to save");
     }.bind(this));
   },
-  render: function() {
+    render: function() {
     if(this.state.mounted) {
       return (
           <div>

@@ -13,5 +13,3 @@ module.exports = React.createClass({
     );
   }
 });
-
-// <EditableTagGroup noteID="5"/>
