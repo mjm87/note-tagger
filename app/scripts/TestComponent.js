@@ -4,12 +4,19 @@ import $ from 'jquery';
 import '../css/base.css';
 
 import EditableNote from './EditableNote.js';
+import NoteSelector from './NoteSelector.js';
 
 module.exports = React.createClass({
 
-  render: function() {
+  selectNote: function (id) {
+    console.log("You selected note #" + id);
+  },
+  render: function () {
     return (
-        <EditableNote noteID="5"/>
+      <div>
+        <NoteSelector onSelect={this.selectNote} />
+        <EditableNote noteID="5" />
+      </div>
     );
   }
 });
