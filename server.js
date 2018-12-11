@@ -209,7 +209,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 //This endpoint filters notes depending on a passed in tags array
 app.get('/filteredNotes', function(req, res) {
   var noteSet = new Set([])
-  //TODO: if no tags are passed in, return the notes that have the "unfiltered" tag
   if (req.body.tags.length > 0) {
     for(tag in req.body.tags) {
       db.collection("tags").findOne(
