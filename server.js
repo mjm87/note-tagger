@@ -210,16 +210,29 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 app.get('/filteredNotes', function(req, res) {
   var noteSet = new Set([])
   //TODO: if no tags are passed in, return the notes that have the "unfiltered" tag
-  for(tag in req.body.tags) {
+  if (req.body.tags.length > 0) {
+    for(tag in req.body.tags) {
+      db.collection("tags").findOne(
+        {name: tag},
+        {_id: false, notes: true},
+        function(err, notesOfThisTag){
+          if (err) throw (err);
+          for(note in notesOfThisTag) {
+            noteSet.add(note.id);
+          }
+        });
+      }
+  }
+  else {
     db.collection("tags").findOne(
-      {name: tag},
+      {name: "untagged"},
       {_id: false, notes: true},
       function(err, notesOfThisTag){
         if (err) throw (err);
         for(note in notesOfThisTag) {
           noteSet.add(note.id);
         }
-    });
+      });
   }
   var nameIDSet = new Set([]);
   for(note in noteSet){
