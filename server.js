@@ -210,7 +210,7 @@ app.post('/filteredNotes', function(req, res) {
   if (req.body.tags.length > 0) {
     for(tag in req.body.tags) {
       db.collection("tags").findOne(
-        {name: tag},
+        {name: tag.name},
         {_id: false, notes: true},
         function(err, notesOfThisTag){
           if (err) throw (err);
