@@ -113,8 +113,13 @@ app.get('/tags/:tagName/notes', function(req, res) {
     {_id: false, notes: true},
     function(err, result) {
       if (err) throw (err);
-      res.json(result.notes);
-    })
+      if(result){
+        res.json(result.notes);
+      }
+      else{
+        res.json(401);
+      }
+    });
 });
 
 //Handling associating tags with notes and vice versa
