@@ -214,27 +214,42 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 });
 
 app.post('/filteredNotes', function(req,res) {
-  var noteSet = new Set([])
+  console.log(req.body.tags);
+  var noteSet = []
   db.collection("notes").find(
     {},
-    {_id: false}).toArray(function(err, notes) {
+    {_id: false, content: false}).toArray(function(err, notes) {
+
+      // foreach of our note documents
       for (let note in notes) {
-        console.log(note);
         isNoteIncluded = true;
+        // foreach of our JSON inputted tags
         for (let tag in req.body.tags) {
-          if (!(req.body.tags[tag] in notes[note].tags)) {
-            console.log(req.body.tags[tag])
-            console.log(notes[note].tags)
+          let thisParticularTag = req.body.tags[tag];
+          noteHasTag = false;
+          // check if this note has this particular tag
+          for(let tagOnNote in notes[note].tags) {
+            let thisTag = notes[note].tags[tagOnNote].name;
+            if(thisTag === thisParticularTag) {
+              // hey we at least have this one
+              noteHasTag = true;
+            }
+          }
+          // if we still don't have it by now, we're never going to
+          // thus this note doesn't have one of the required tags
+          // and thus shouldn't be included
+          if(!noteHasTag) {
             isNoteIncluded = false;
           }
+
         }
         if(isNoteIncluded){
-          noteSet.add({"id":notes[note].id, "name": notes[note].name});
+          noteSet.push({"id":notes[note].id, "name": notes[note].name});
         }
       }
-    })
-    console.log(noteSet);
-  res.json(noteSet);
+        console.log(noteSet);
+        res.json(noteSet);
+      })
 });
 
 // //This endpoint filters notes depending on a passed in tags array
