@@ -58,7 +58,6 @@ app.put('/notes', function(req, res){
   }
   else {
     var tagNames =  req.body.tags;
-    console.log(tagNames);
     if (!tagNames){
       tagNames = [{"name": "untagged"}];
     }
@@ -66,6 +65,7 @@ app.put('/notes', function(req, res){
       content: req.body.content, tags: tagNames}}, {upsert: true}, function(err,result) {
         if (err) throw (err);
         for(let tag in tagNames){
+          //Refactor this to a findOneAndUpdate
           db.collection("tags").findOne(
             {name: tagNames[tag].name},
             function (err, result2) {
@@ -76,11 +76,11 @@ app.put('/notes', function(req, res){
                 {upsert: true},
                 function(err, result) {
                   if (err) throw (err);
-                  res.json(newOrOldID);
                 });
               });
         }
       });
+      res.json(newOrOldID);
   }
 });
 
@@ -90,31 +90,33 @@ app.delete('/notes/:toBeDeleted', function(req, res){
     {id: req.params.toBeDeleted},
     function(err, result) {
       if (err) throw (err);
-      for(let tag in result) {
+      let tags = result.value.tags;
+      for(let tag in tags) {
         db.collection("tags").findOne(
-          {name: tag, notes: {id: {$eq: result.id}}},
+          //, notes: {id: {$eq: result.value.id}}
+          {name: tags[tag].name},
           function (err, result2) {
             if (err) throw (err);
+            console.log(result2.notes)
             if (result2.notes.length > 1) {
               db.collection("tags").updateOne(
-                {name: tag},
+                {name: tags[tag].name},
                 {$pull: {notes: [{id: req.params.toBeDeleted}]}},
                 function(err, result3) {
                   if (err) throw (err);
-                  res.json(200);
                 });
               }
               else {
-                db.collection(tags).findOneAndDelete(
-                  {name: tag},
+                db.collection("tags").findOneAndDelete(
+                  {name: tags[tag].name},
                   function(err, deletedTag) {
                     if (err) throw (err);
-                    res.json(200);
                   }
                 )
               }
           });
       }
+      res.json(200);
   });
 });
 
@@ -226,7 +228,6 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 });
 
 app.post('/filteredNotes', function(req,res) {
-  console.log(req.body.tags);
   var noteSet = []
   db.collection("notes").find(
     {},
@@ -259,7 +260,6 @@ app.post('/filteredNotes', function(req,res) {
           noteSet.push({"id":notes[note].id, "name": notes[note].name});
         }
       }
-        console.log(noteSet);
         res.json(noteSet);
       })
 });
