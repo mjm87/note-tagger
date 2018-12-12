@@ -215,7 +215,7 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 
 app.post('/filteredNotes', function(req,res) {
   var noteSet = new Set([])
-  db.collections("notes").find(
+  db.collection("notes").find(
     {},
     {_id: false}).toArray(function(err, notes) {
       for (let note in notes) {
