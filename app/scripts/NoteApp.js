@@ -39,6 +39,28 @@ module.exports = React.createClass({
   deselectNote: function(){
     this.setState({selectedNote: null});
   },
+  addNote: function() {
+    var newNote = {
+      name: "Untitled",
+      content: "",
+      tags: this.state.selectedTags.map(function(tag) {
+        return {name: tag};
+      })
+    }
+    $.ajax({
+        url: "/notes",
+        type: 'PUT',
+        data: newNote,
+        dataType: 'json'
+    })
+        .done(function (results) {
+            console.log("added: " + results);
+            this.setState({ selectedNote: results })
+        }.bind(this))
+        .fail(function (xhr, status, error) {
+            console.log("failed to create new note");
+        }.bind(this));
+  },
   render: function () {
     var editableNote = function () {
       if (this.state.selectedNote != null)
@@ -51,6 +73,7 @@ module.exports = React.createClass({
         <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected}/>
         <div className="NoteArea">
           <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} isSelected={this.isNoteSelected} deselect={this.deselectNote}/>
+          <button onClick={this.addNote} className="AddNote">Add new note</button>
           {editableNote()}
         </div>
       </div>

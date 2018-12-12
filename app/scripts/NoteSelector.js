@@ -28,7 +28,7 @@ module.exports = React.createClass({
     })
       .done(function (results) {
         this.setState({ notes: results }, function () {
-          if (this.state.selectedNote === null && results) {
+          if (this.state.selectedNote === null && results && results.length > 0) {
             this.setState({ selectedNote: results[0].id });
           }
         }.bind(this));
