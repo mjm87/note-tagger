@@ -47,15 +47,17 @@ module.exports = React.createClass({
     $.ajax({
         url: "/filteredNotes",
         type: 'POST',
-        data: tags,
+        data: {"tags": tags},
         dataType: 'json'
       })
         .done(function (results) {
-          this.setState({ notes: results}, () => console.log(this.state.notes));
+          console.log("results" + JSON.stringify(results));
+          this.setState({ notes: [results]}, () => console.log(this.state.notes));
         }.bind(this))
         .fail(function (results){
           console.log("failed");
         })
+    console.log("updating: " + tags);
   },
   performNastyAjaxCalls: function (tagName) {
     // clear notes list
@@ -112,7 +114,7 @@ module.exports = React.createClass({
   render: function () {
     if (this.state.notes.length > 0) {
       var Select = this.props.onSelect;
-      var notesList = this.state.notes.map(function (note) {
+      var notesList = this.state.notes.map(function (note){
         var selectThisNote = function () {
           Select(note.id);
         }
