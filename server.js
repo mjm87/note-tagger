@@ -219,9 +219,12 @@ app.post('/filteredNotes', function(req,res) {
     {},
     {_id: false}).toArray(function(err, notes) {
       for (let note in notes) {
+        console.log(note);
         isNoteIncluded = true;
         for (let tag in req.body.tags) {
           if (!(req.body.tags[tag] in notes[note].tags)) {
+            console.log(req.body.tags[tag])
+            console.log(notes[note].tags)
             isNoteIncluded = false;
           }
         }
@@ -230,6 +233,7 @@ app.post('/filteredNotes', function(req,res) {
         }
       }
     })
+    console.log(noteSet);
   res.json(noteSet);
 });
 
