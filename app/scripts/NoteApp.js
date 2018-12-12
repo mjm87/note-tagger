@@ -55,7 +55,7 @@ module.exports = React.createClass({
     })
         .done(function (results) {
             console.log("added: " + results);
-            this.setState({ selectedNote: results })
+            this.setState({ selectedNote: results });
         }.bind(this))
         .fail(function (xhr, status, error) {
             console.log("failed to create new note");
