@@ -213,6 +213,26 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
   });
 });
 
+app.post('/filteredNotes', function(req,res) {
+  var noteSet = new Set([])
+  db.collections("notes").find(
+    {},
+    {_id: false}).toArray(function(err, notes) {
+      for (let note in notes) {
+        isNoteIncluded = true;
+        for (let tag in req.body.tags) {
+          if (!(req.body.tags[tag] in notes[note].tags)) {
+            isNoteIncluded = false;
+          }
+        }
+        if(isNoteIncluded){
+          noteSet.add({"id":notes[note].id, "name": notes[note].name});
+        }
+      }
+    })
+  res.json(noteSet);
+});
+
 // //This endpoint filters notes depending on a passed in tags array
 // app.post('/filteredNotes', function(req, res) {
 //   var noteSet = new Set([])
@@ -258,6 +278,47 @@ app.delete('/:collection/:noteID/:tagName', function(req, res) {
 //             }
 //           });
 //         }
+// });
+
+// //Endpoints to add or remove tags from the selectedTags collection
+// app.get('/selectedTags', function(req, res){
+//   db.collections("selectedTags").find(
+//       { },
+//       {name: true, _id:false}).toArray(function(err, tagNames) {
+//           if (err) throw (err);
+//           res.json(tagNames);
+//   });
+// });
+//
+// app.post('/selectedTags/:tagName', function(req, res){
+//   db.collections("selectedTags").findOneAndUpdate(
+//     {name:req.params.tagName},
+//     {upsert: true},
+//     function(err, notUpserted) {
+//       if (err) throw (err);
+//       if (!notUpserted) {
+//         res.json("added");
+//       }
+//       else {
+//         db.collections("selectedTags").findOneAndDelete(
+//           {name: req.params.tagName},
+//           function(err, deleted){
+//             if (err) throw (err);
+//             res.json("deleted");
+//           }
+//         )
+//       }
+//     }
+//   )
+// });
+//
+// app.delete('/selectedTags/:tagName', function(req, res){
+//   db.collections("selectedTags").findOneAndDelete(
+//     {name: req.params.tagName},
+//     function(err, success) {
+//       if (err) throw (err);
+//       res.json("deleted");
+//   });
 // });
 
 //TODO ROUTING GOES HERE, HOORAY!
