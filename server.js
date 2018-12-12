@@ -99,7 +99,13 @@ app.delete('/notes/:toBeDeleted', function(req, res){
                 });
               }
               else {
-                res.json(200);
+                db.collection(tags).findOneAndDelete(
+                  {name: tag},
+                  function(err, deletedTag) {
+                    if (err) throw (err);
+                    res.json(200);
+                  }
+                )
               }
           });
       }
