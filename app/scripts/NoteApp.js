@@ -36,7 +36,9 @@ module.exports = React.createClass({
     //update state
     this.setState({selectedTags: tags}, () => console.log(this.state.selectedTags));
   },
-
+  deselectNote: function(){
+    this.setState({selectedNote: null});
+  },
   render: function () {
     var editableNote = function () {
       if (this.state.selectedNote != null)
@@ -48,7 +50,7 @@ module.exports = React.createClass({
       <div className="NoteApp">
         <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected}/>
         <div className="NoteArea">
-          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} isSelected={this.isNoteSelected} />
+          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} isSelected={this.isNoteSelected} deselect={this.deselectNote}/>
           {editableNote()}
         </div>
       </div>
