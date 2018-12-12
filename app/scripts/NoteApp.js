@@ -18,17 +18,23 @@ module.exports = React.createClass({
     this.setState({ selectedNote: id });
   },
 
+  isTagSelected: function(tag) {
+    return this.state.selectedTags.includes(tag); 
+  },
+  isNoteSelected: function(id){
+    return this.state.selectedNote === id;
+  },
   handleClick : function(tag) {
     var tags = this.state.selectedTags;
     if(tags.includes(tag)) {
       // it is already selected --> deselect
-      tags = tags.filter((t)=> t === tag);
+      tags = tags.filter((t)=> t !== tag);
     } else {
       // it is not selected --> select
       tags.push(tag);
     }
     //update state
-    this.setState({selectedTags: tags});
+    this.setState({selectedTags: tags}, () => console.log(this.state.selectedTags));
   },
 
   render: function () {
@@ -40,9 +46,9 @@ module.exports = React.createClass({
     }.bind(this);
     return (
       <div className="NoteApp">
-        <TagSelector handleClick={this.handleClick}/>
+        <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected}/>
         <div className="NoteArea">
-          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} />
+          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} isSelected={this.isNoteSelected} />
           {editableNote()}
         </div>
       </div>

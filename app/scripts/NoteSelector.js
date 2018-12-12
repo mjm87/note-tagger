@@ -10,17 +10,23 @@ module.exports = React.createClass({
   },
   componentDidMount() {
     if (this.props.tags) {
-      this.performNastyAjaxCalls(this.props.tags[0]);
+      //this.performNastyAjaxCalls(this.props.tags[0]);
+      this.niceAjaxCall(this.props.tags);
     }
   },
   componentDidUpdate: function (oldProps, oldState) {
+
+    if(this.props.tags.length !== oldProps.tags) {
+      this.niceAjaxCall(this.props.tags);
+    }
+    /*
     //checking if we added a tag
     if (this.props.tags.length > oldProps.tags.length) {
       //finding the tag that was added
       for (let t in this.props.tags) {
         let tag = this.props.tags[t];
         if (!oldProps.tags.includes(tag)) {
-          performNastyAjaxCalls(tag);
+          //this.performNastyAjaxCalls(tag);
         }
       }
     }
@@ -30,10 +36,26 @@ module.exports = React.createClass({
       for (let t in oldProps.tags) {
         let tag = oldProps.tags[t];
         if (!this.props.tags.includes(tag)) {
-          performNastyAjaxCalls(tag);
+          this.performNastyAjaxCalls(tag);
         }
       }
     }
+    */
+  },
+
+  niceAjaxCall: function(tags) {
+    $.ajax({
+        url: "/filteredNotes",
+        type: 'POST',
+        data: tags,
+        dataType: 'json'
+      })
+        .done(function (results) {
+          this.setState({ notes: results}, () => console.log(this.state.notes));
+        }.bind(this))
+        .fail(function (results){
+          console.log("failed");
+        })
   },
   performNastyAjaxCalls: function (tagName) {
     // clear notes list
@@ -94,11 +116,19 @@ module.exports = React.createClass({
         var selectThisNote = function () {
           Select(note.id);
         }
-        return (
-          <li key={note.id}>
-            <button onClick={selectThisNote}>{note.name}</button>
-          </li>
-        );
+        if(this.props.isSelected(note.id)) {
+          return (
+            <li key={note.id}>
+              <button onClick={selectThisNote} className="SelectedNote"> {note.name} </button>
+            </li>
+          );
+        } else {
+          return (
+            <li key={note.id}>
+              <button onClick={selectThisNote} className="UnselectedNote"> {note.name} </button>
+            </li>
+          );
+        }
       });
       return (
         <div className="NoteSelector">

@@ -6,10 +6,10 @@ import '../css/base.css';
 
 module.exports = React.createClass({
 
-  getInitialState: function() {
-    return ({tags:[]});
+  getInitialState: function () {
+    return ({ tags: [] });
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     $.ajax({
       url: "/tags",
       type: 'GET',
@@ -22,12 +22,18 @@ module.exports = React.createClass({
         console.log("Couldn't find any tags");
       }.bind(this));
   },
-  render: function() {
-    
-    var selectableTags = this.state.tags.map(function(tag) {
-      return (
-        <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectableTag" />
-      )
+  render: function () {
+
+    var selectableTags = this.state.tags.map(function (tag) {
+      if (this.props.isSelected(tag.name)){
+        return (
+          <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectedTag" />
+        );
+      } else {
+        return (
+          <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectableTag" />
+        );
+      }
     }.bind(this));
     return (
       <div className="TagSelector">
