@@ -48,7 +48,6 @@ app.get('/notes/:noteID', function(req, res) {
 //if none are provided
 app.put('/notes', function(req, res){
   var newOrOldID = String(Date.now());
-  var tagNames = {"name": "untagged"}
   if (req.body.id) {
     newOrOldID = req.body.id;
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {name: req.body.name,
@@ -58,22 +57,29 @@ app.put('/notes', function(req, res){
       });
   }
   else {
+    var tagNames =  req.body.tags;
+    console.log(tagNames);
+    if (!tagNames){
+      tagNames = [{"name": "untagged"}];
+    }
     db.collection('notes').findOneAndUpdate({id: newOrOldID}, {$set: {id: newOrOldID, name: req.body.name,
-      content: req.body.content, tags: [tagNames]}}, {upsert: true}, function(err,result) {
+      content: req.body.content, tags: tagNames}}, {upsert: true}, function(err,result) {
         if (err) throw (err);
-        db.collection("tags").findOne(
-          {name: tagNames.name},
-          function (err, result2) {
-            if (err) throw (err);
+        for(let tag in tagNames){
+          db.collection("tags").findOne(
+            {name: tagNames[tag].name},
+            function (err, result2) {
+              if (err) throw (err);
               db.collection("tags").updateOne(
-                {name: tagNames.name},
+                {name: tagNames[tag].name},
                 {$push: {notes: {id: newOrOldID}}},
                 {upsert: true},
                 function(err, result) {
                   if (err) throw (err);
                   res.json(newOrOldID);
+                });
               });
-          });
+        }
       });
   }
 });
