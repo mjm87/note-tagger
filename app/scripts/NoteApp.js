@@ -53,7 +53,6 @@ module.exports = React.createClass({
       data: newNote,
       dataType: 'json'
     })
-<<<<<<< HEAD
       .done(function (results) {
         console.log("added: " + results);
         this.setState({ selectedNote: results });
@@ -61,15 +60,6 @@ module.exports = React.createClass({
       .fail(function (xhr, status, error) {
         console.log("failed to create new note");
       }.bind(this));
-=======
-        .done(function (results) {
-            console.log("added: " + results);
-            this.setState({ selectedNote: results });
-        }.bind(this))
-        .fail(function (xhr, status, error) {
-            console.log("failed to create new note");
-        }.bind(this));
->>>>>>> c71da07f7df36c4b8a686d5c604a7d65776f8ca2
   },
   render: function () {
     var editableNote = function () {
