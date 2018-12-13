@@ -15,7 +15,12 @@ module.exports = React.createClass({
     }
   },
   componentDidUpdate: function (oldProps, oldState) {
-    if (this.props.tags.length !== oldProps.tags.length) {
+      //NOTE: for some reason comparing this.props.tags and oldProps.tags
+      // never seems to work (regardless of comparison method) perhaps
+      // because arrays are stored as a pointer or something so that the old
+      // and the new reference the same thing???
+    if(this.props.numOfTags !== oldProps.numOfTags) { 
+        console.log("tags changed");
       this.niceAjaxCall(this.props.tags);
     }
     if(this.props.selectedNote !== oldProps.selectedNote) {

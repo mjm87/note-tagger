@@ -35,7 +35,7 @@ module.exports = React.createClass({
       tags.push(tag);
     }
     //update state
-    this.setState({ selectedTags: tags }, () => console.log(this.state.selectedTags));
+    this.setState({ selectedTags: tags});
   },
   deselectNote: function (status) {
     this.setState({ selectedNote: null });
@@ -92,7 +92,7 @@ module.exports = React.createClass({
       <div className="NoteApp">
         <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected} tags={this.state.tags}/>
         <div className="NoteArea">
-          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} />
+          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length}/>
           <button onClick={this.addNote} className="AddNote">Add new note</button>
           {editableNote()}
         </div>
