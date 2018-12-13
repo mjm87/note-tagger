@@ -18,6 +18,9 @@ module.exports = React.createClass({
     if (this.props.tags.length !== oldProps.tags.length) {
       this.niceAjaxCall(this.props.tags);
     }
+    if(this.props.selectedNote !== oldProps.selectedNote) {
+      this.niceAjaxCall(this.props.tags);
+    }
   },
   niceAjaxCall: function (tags) {
     $.ajax({
@@ -46,7 +49,7 @@ module.exports = React.createClass({
       dataType: 'json'
     })
       .done(function (results) {
-        this.props.deselect();
+        this.props.deselect("deleted");
         this.setState({selectedNote: null});
         this.niceAjaxCall(this.props.tags);
         console.log("deleted note");
@@ -63,7 +66,7 @@ module.exports = React.createClass({
         var selectThisNote = function () {
           Select(note.id);
         }
-        if (this.props.isSelected(note.id)) {
+        if (this.props.selectedNote === note.id) {
           return (
             <li key={note.id}>
               <button onClick={selectThisNote} className="SelectedNote"> {note.name} </button>

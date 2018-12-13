@@ -10,21 +10,11 @@ module.exports = React.createClass({
     return ({ tags: [] });
   },
   componentDidMount: function () {
-    $.ajax({
-      url: "/tags",
-      type: 'GET',
-      dataType: 'json'
-    })
-      .done(function (results) {
-        this.setState({ tags: results });
-      }.bind(this))
-      .fail(function (xhr, status, error) {
-        console.log("Couldn't find any tags");
-      }.bind(this));
+    
   },
   render: function () {
 
-    var selectableTags = this.state.tags.map(function (tag) {
+    var selectableTags = this.props.tags.map(function (tag) {
       if (this.props.isSelected(tag.name)){
         return (
           <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectedTag" />

@@ -1,0 +1,67 @@
+Bugs
+----
+
+
+TWEAK to endpoint for deleting a note:
+=======================================
+Deleting a note doesn't necessarily delete all tagged-links to that document.
+I created two documents and deleted one. Any tags which only existed on the deleted document
+were properly removed HOWEVER, the untagged tag which was shared by both documents still had the document referenced...
+
+
+Refresh stuff is still wonky:
+=============================
+Need to tweak TagSelector and NoteSelector to update
+whenever a note is added or deleted PLUS when tags are created / deleted
+PLUS when a selectable tag is selected or unselected...
+
+
+
+
+
+
+
+
+Features
+--------
+
+
+
+Add a search bar
+================
+1. Needs an endpoint that takes in a search string and returns documents with a title (or text that contain that word)
+    -- needs to return pretty much the full document info for each...
+        + name and ID especially
+        + but displaying tags or short sentence of matching content would be awesome
+
+2. Need a component at the App level to do that
+    --> by selecting a searched for document --> selectedNote set to that ID
+    --> selected tags would need to then match our document's tags
+
+3. Needs a nice looking dropdown interface...
+
+
+Tag auto-completion
+===================
+1. Need a component OR a change to TagCreator
+    + calls an endpoint to return all tags (/tags?)
+    + onChange={filterTagsForWords}
+    + popup a drop-down like "display" that a tag can be selected (tab and arrow key support)
+
+
+Image Copy-and-Pasting-ing
+==========================
+1. look at tutorials online
+2. need a way of storing images in MongoDB
+3. need a way of intercepting CTRL-V and other paste commands
+4. need to be able to dynamically add images into what's essentially a text field
+    - maintain everything as an HTML component with "embedded" images
+    - still need to be able to add text before/after images
+5. want to be able to click and drag images around in note area
+
+
+Modern Visual Aesthetic
+=======================
+- Either look at colors and placement with CSS as we've been doing
+- "steal" CSS from online
+- find a React component library that provides nice aesthetic options for the buttons and things we're interested in
