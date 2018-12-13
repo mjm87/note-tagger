@@ -97,13 +97,12 @@ app.delete('/notes/:toBeDeleted', function(req, res){
           {name: tags[tag].name},
           function (err, result2) {
             if (err) throw (err);
-            console.log(result2.notes)
             if (result2.notes.length > 1) {
               db.collection("tags").updateOne(
-                {name: tags[tag].name},
-                {$pull: {notes: [{id: req.params.toBeDeleted}]}},
-                function(err, result3) {
-                  if (err) throw (err);
+                {name: tags[tag].name}, 
+                {$pull: { notes: { id: req.params.toBeDeleted}}}, 
+                function(err, res3) {
+                  if(err) throw (err);   
                 });
               }
               else {
