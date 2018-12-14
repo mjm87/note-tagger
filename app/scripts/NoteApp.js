@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import {Link} from 'react-router';
 
 import '../css/base.css';
 
@@ -117,6 +118,7 @@ module.exports = React.createClass({
           {editableNote()}
         </div>
         {/*<ImageCopierComponent/>*/}
+        <Link to={'/About'}>About</Link> 
       </div>
     );
   }
