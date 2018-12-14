@@ -123,8 +123,10 @@ module.exports = React.createClass({
           <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length} addNote={this.addNote} status={this.state.status}/>
           {editableNote()}
         </div>
+        <div className="Footer">
+          <Link to={'/About'}>About</Link>
+        </div>
         {/*<ImageCopierComponent/>*/}
-        <Link to={'/About'}>About</Link>
       </div>
     );
   }
