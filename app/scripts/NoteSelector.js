@@ -22,11 +22,14 @@ module.exports = React.createClass({
     // because arrays are stored as a pointer or something so that the old
     // and the new reference the same thing???
     if (this.props.numOfTags !== oldProps.numOfTags) {
-      console.log("tags changed");
       this.niceAjaxCall(this.props.tags);
     }
     if (this.props.selectedNote !== oldProps.selectedNote) {
       this.niceAjaxCall(this.props.tags);
+      this.setState({selectedNote: this.props.selectedNote});
+    }
+    if (this.props.status !== oldProps.status){
+      this.niceAjaxCall();
     }
   },
   niceAjaxCall: function (tags) {
