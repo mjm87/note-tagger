@@ -6,7 +6,6 @@ import '../css/base.css';
 import EditableTagGroup from './EditableTagGroup.js';
 import NoteHeader from './NoteHeader.js';
 import NoteContent from './NoteContent.js';
-import { runInThisContext } from 'vm';
 
 module.exports = React.createClass({
 
@@ -67,14 +66,12 @@ module.exports = React.createClass({
       dataType: 'json'
     })
       .done(function (results) {
-        console.log("saved: " + results);
       }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("failed to save");
       }.bind(this));
   },
   render: function () {
-    console.log("props: " + this.props.noteID);
     if (this.state.mounted) {
       return (
         <div className="EditableNote">

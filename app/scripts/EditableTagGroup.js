@@ -41,14 +41,12 @@ module.exports = React.createClass({
 
   // adding the tag to the note
   addTag: function (tagName) {
-    console.log("Adding " + tagName + " to Note #" + this.props.noteID);
     let oldData = this.state.data;
     let newData = oldData.concat({ name: tagName });
     $.ajax({
       url: "/notes/" + this.props.noteID + "/" + tagName,
       type: 'PUT'
     }).done(function (results) {
-      console.log("Added " + tagName + " to Note #" + this.props.noteID);
       this.setState({ data: newData });
       this.props.updateTags("Added", tagName);
     }.bind(this))
@@ -66,7 +64,6 @@ module.exports = React.createClass({
       url: "/notes/" + this.props.noteID + "/" + tagName,
       type: 'DELETE'
     }).done(function (results) {
-      console.log("DONE: " + newData);
       this.setState({ data: newData });
       this.props.updateTags("Removed", tagName);
     }.bind(this))
