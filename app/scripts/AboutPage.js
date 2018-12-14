@@ -22,7 +22,9 @@ module.exports = React.createClass({
                 <p></p>
                 <h4>Alastair Van Maren</h4>
 
-                <p> If you're interested in seeing how we did it: check out our github repo: https://github.com/mjm87/notetagger </p>
+                <p> If you're interested in seeing how we did it: check out our </p>
+                <link to={'https://github.com/mjm87/note-tagger'}>github repository</link>
+                <p>.</p>
                 <Link to={'/'}>back</Link>
             </div>
         );
