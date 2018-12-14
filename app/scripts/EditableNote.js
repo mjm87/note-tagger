@@ -6,7 +6,7 @@ import '../css/base.css';
 import EditableTagGroup from './EditableTagGroup.js';
 import NoteHeader from './NoteHeader.js';
 import NoteContent from './NoteContent.js';
-import AggregateContentViewer from './AggregateContentViewer.js';
+//import AggregateContentViewer from './AggregateContentViewer.js';
 
 module.exports = React.createClass({
 
