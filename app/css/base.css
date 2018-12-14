@@ -1,5 +1,5 @@
 body {
-  background: ghostwhite;
+  background: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.7;
@@ -141,4 +141,16 @@ button{
 .SelectedTag:hover{
   background-color: white;
   color: black;
+}
+
+.AddNote{
+  height: 25px;
+}
+.AddNote:hover{
+  height: 30px;
+}
+
+.Footer{
+  position: fixed;
+  bottom: 0;
 }
