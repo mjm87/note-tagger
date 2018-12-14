@@ -91,7 +91,6 @@ module.exports = React.createClass({
       else {
         this.props.select(this.props.index);
       }
-
     }
   },
   render: function () {

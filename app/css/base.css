@@ -142,3 +142,28 @@ button{
   background-color: white;
   color: black;
 }
+
+textarea {
+  -webkit-appearance: unset;
+  -webkit-rtl-ordering: unset;
+  border-width: 0px;
+  background: transparent !important;
+  border: none;
+  outline: none;
+  padding: 0px 0px 0px 0px;
+  white-space: normal;
+  resize: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1;
+  flex-direction: column;
+  overflow-wrap: normal;
+  display: block;
+  width: 35em;
+}
+
+.ContentList {
+  border: 1px solid #3385cc;
+  width: 35em;
+  height: 25em;
+}
