@@ -46,20 +46,32 @@ module.exports = React.createClass({
       })
   },
   Delete: function (noteID) {
+    // remove note from state so that it disappears quickly
+    var notesList = this.state.notes;
+    notesList.filter((n)=>n.id !== noteID);
+    this.setState({notes: notesList});
+
+    // let NoteApp know that the note has been deleted
+    this.props.deselect("deleted");
+    
+    // clear out the selected not status
+    this.setState({selectedNote: null});
+
+    // remove note from the database so that it doesn't get rerendered
     $.ajax({
       url: "/notes/" + noteID,
       type: 'DELETE',
       dataType: 'json'
     })
       .done(function (results) {
-        this.props.deselect("deleted");
-        this.setState({selectedNote: null});
+        // get an updated list of notes?
         this.niceAjaxCall(this.props.tags);
         console.log("deleted note");
       }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("failed to delete note");
       }.bind(this));
+
   },
 
   render: function () {
