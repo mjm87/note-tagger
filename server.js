@@ -107,7 +107,6 @@ app.delete('/notes/:toBeDeleted', function(req, res){
                     {name: tags[tag].name, notes: []},
                     function(err, res4){
                       if(err) throw (err);
-                      console.log("deleted tag entirely since it was empty: " + res4)
                     }
                   );
                 });

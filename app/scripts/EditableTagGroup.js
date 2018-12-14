@@ -50,6 +50,7 @@ module.exports = React.createClass({
     }).done(function (results) {
       console.log("Added " + tagName + " to Note #" + this.props.noteID);
       this.setState({ data: newData });
+      this.props.updateTags("Added", tagName);
     }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("Failed to add " + tagName + " to Note #" + this.props.noteID);
@@ -67,6 +68,7 @@ module.exports = React.createClass({
     }).done(function (results) {
       console.log("DONE: " + newData);
       this.setState({ data: newData });
+      this.props.updateTags("Removed", tagName);
     }.bind(this))
       .fail(function (xhr, error, msg) {
         console.log("FAIL: " + oldData);

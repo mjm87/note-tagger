@@ -66,7 +66,17 @@ module.exports = React.createClass({
         console.log("Couldn't find any tags");
       }.bind(this));
   },
-
+  updateTags(operation, tag) {
+    // handle tag additions
+    if(operation === "Added") {
+      var tags = this.state.tags;
+      tags.push({name: tag});
+      this.setState({tags: tags});
+    }
+    if(operation === "Removed") {
+      setTimeout(this.retrieveTags, 500);
+    }
+  },
   addNote: function () {
     var newNote = {
       name: "Untitled",
@@ -93,7 +103,7 @@ module.exports = React.createClass({
     var editableNote = function () {
       if (this.state.selectedNote != null)
         return (
-          <EditableNote noteID={this.state.selectedNote} />
+          <EditableNote noteID={this.state.selectedNote} updateTags={this.updateTags}/>
         );
     }.bind(this);
     return (

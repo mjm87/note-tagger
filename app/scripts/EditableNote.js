@@ -80,7 +80,7 @@ module.exports = React.createClass({
         <div className="EditableNote">
           <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle} />
           <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />
-          <EditableTagGroup noteID={this.props.noteID} />
+          <EditableTagGroup noteID={this.props.noteID} updateTags={this.props.updateTags}/>
           <button type="button" onClick={this.save}>Save</button>
         </div>
       );
