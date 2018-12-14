@@ -5,7 +5,7 @@ import $ from 'jquery';
 import '../css/base.css';
 
 module.exports = React.createClass({
-  render: function() {
+  render: function () {
     return (
       <div className="TODO:">
         {/* Place JSX code here */}

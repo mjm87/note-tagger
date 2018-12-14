@@ -7,7 +7,7 @@ module.exports = React.createClass({
 
     //TODO: lot and lots of stuff...
     getInitialState() {
-        return {noteID: -1};
+        return { noteID: -1 };
     },
     addNewNote: function () {
         var newNote = {
@@ -45,8 +45,8 @@ module.exports = React.createClass({
     render: function () {
         return (
             <div className="NotesTab">
-              <button type="button" onClick={this.addNewNote}>Add New Note</button>
-              <button type="button" onClick={this.deleteNote}>Delete Note</button>
+                <button type="button" onClick={this.addNewNote}>Add New Note</button>
+                <button type="button" onClick={this.deleteNote}>Delete Note</button>
             </div>
         );
     }

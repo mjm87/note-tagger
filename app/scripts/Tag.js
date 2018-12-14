@@ -1,13 +1,13 @@
 import React from 'react';
 
 module.exports = React.createClass({
-  OnClick : function() {
+  OnClick: function () {
     return this.props.handleClick(this.props.tagName);
   },
-  render: function() {
+  render: function () {
     return (
-      <button type="button" onClick={this.OnClick} className={this.props.tagType} >  
-          {this.props.tagName}
+      <button type="button" onClick={this.OnClick} className={this.props.tagType} >
+        {this.props.tagName}
       </button>
     );
   }

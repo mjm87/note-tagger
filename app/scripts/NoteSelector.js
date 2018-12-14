@@ -15,15 +15,15 @@ module.exports = React.createClass({
     }
   },
   componentDidUpdate: function (oldProps, oldState) {
-      //NOTE: for some reason comparing this.props.tags and oldProps.tags
-      // never seems to work (regardless of comparison method) perhaps
-      // because arrays are stored as a pointer or something so that the old
-      // and the new reference the same thing???
-    if(this.props.numOfTags !== oldProps.numOfTags) { 
-        console.log("tags changed");
+    //NOTE: for some reason comparing this.props.tags and oldProps.tags
+    // never seems to work (regardless of comparison method) perhaps
+    // because arrays are stored as a pointer or something so that the old
+    // and the new reference the same thing???
+    if (this.props.numOfTags !== oldProps.numOfTags) {
+      console.log("tags changed");
       this.niceAjaxCall(this.props.tags);
     }
-    if(this.props.selectedNote !== oldProps.selectedNote) {
+    if (this.props.selectedNote !== oldProps.selectedNote) {
       this.niceAjaxCall(this.props.tags);
     }
   },
@@ -48,11 +48,11 @@ module.exports = React.createClass({
   Delete: function (noteID) {
     // remove note from state so that it disappears quickly
     var notesList = this.state.notes;
-    notesList.filter((n)=>n.id !== noteID);
-    this.setState({notes: notesList});
+    notesList.filter((n) => n.id !== noteID);
+    this.setState({ notes: notesList });
 
     // clear out the selected not status
-    this.setState({selectedNote: null});
+    this.setState({ selectedNote: null });
 
     // remove note from the database so that it doesn't get rerendered
     $.ajax({
@@ -78,10 +78,10 @@ module.exports = React.createClass({
       var Select = this.props.onSelect;
       var notesList = this.state.notes.map(function (note) {
         var selectThisNote = function () {
-          this.setState({selectedNote: note.id})
+          this.setState({ selectedNote: note.id })
           Select(note.id);
         }.bind(this);
-        var deleteThisNote = function() {
+        var deleteThisNote = function () {
           this.Delete(note.id);
           this.props.deselect("deleted");
         }.bind(this);

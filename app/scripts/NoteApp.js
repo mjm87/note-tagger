@@ -1,6 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
 import '../css/base.css';
 
@@ -19,12 +19,12 @@ module.exports = React.createClass({
     this.retrieveTags();
   },
   selectNote: function (id) {
-    if(this.state.selectedNote !== id) {
+    if (this.state.selectedNote !== id) {
       // update selected note to be this note
       this.setState({ selectedNote: id });
     } else {
       // deselect the note (but not delete)
-      this.setState({selectedNote: null});
+      this.setState({ selectedNote: null });
     }
   },
 
@@ -44,19 +44,19 @@ module.exports = React.createClass({
       tags.push(tag);
     }
     //update state
-    this.setState({ selectedTags: tags});
+    this.setState({ selectedTags: tags });
   },
   deselectNote: function (status) {
     this.setState({ selectedNote: null });
-    console.log(status + ": " + (status==="deleted"));
-    if(status === "deleted") {
+    console.log(status + ": " + (status === "deleted"));
+    if (status === "deleted") {
       // update tags in a second or so to ensure the database has been
       // updated and properly cleansed of any unused tags
       setTimeout(this.retrieveTags, 500);
     };
   },
 
-  retrieveTags: function() {
+  retrieveTags: function () {
     $.ajax({
       url: "/tags",
       type: 'GET',
@@ -71,12 +71,12 @@ module.exports = React.createClass({
   },
   updateTags(operation, tag) {
     // handle tag additions
-    if(operation === "Added") {
+    if (operation === "Added") {
       var tags = this.state.tags;
-      tags.push({name: tag});
-      this.setState({tags: tags});
+      tags.push({ name: tag });
+      this.setState({ tags: tags });
     }
-    if(operation === "Removed") {
+    if (operation === "Removed") {
       setTimeout(this.retrieveTags, 500);
     }
   },
@@ -106,19 +106,19 @@ module.exports = React.createClass({
     var editableNote = function () {
       if (this.state.selectedNote != null)
         return (
-          <EditableNote noteID={this.state.selectedNote} updateTags={this.updateTags}/>
+          <EditableNote noteID={this.state.selectedNote} updateTags={this.updateTags} />
         );
     }.bind(this);
     return (
       <div className="NoteApp">
-        <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected} tags={this.state.tags}/>
+        <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected} tags={this.state.tags} />
         <div className="NoteArea">
-          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length}/>
+          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length} />
           <button onClick={this.addNote} className="AddNote">Add new note</button>
           {editableNote()}
         </div>
         {/*<ImageCopierComponent/>*/}
-        <Link to={'/About'}>About</Link> 
+        <Link to={'/About'}>About</Link>
       </div>
     );
   }
