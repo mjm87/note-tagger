@@ -103,6 +103,13 @@ app.delete('/notes/:toBeDeleted', function(req, res){
                 {$pull: { notes: { id: req.params.toBeDeleted}}}, 
                 function(err, res3) {
                   if(err) throw (err);   
+                  db.collection("tags").findOneAndDelete(
+                    {name: tags[tag].name, notes: []},
+                    function(err, res4){
+                      if(err) throw (err);
+                      console.log("deleted tag entirely since it was empty: " + res4)
+                    }
+                  );
                 });
               }
               else {
