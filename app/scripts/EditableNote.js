@@ -6,6 +6,7 @@ import '../css/base.css';
 import EditableTagGroup from './EditableTagGroup.js';
 import NoteHeader from './NoteHeader.js';
 import NoteContent from './NoteContent.js';
+import AggregateContentViewer from './AggregateContentViewer.js';
 
 module.exports = React.createClass({
 
@@ -77,8 +78,9 @@ module.exports = React.createClass({
         <div className="EditableNote">
           <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle} />
           <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />
-          <EditableTagGroup noteID={this.props.noteID} updateTags={this.props.updateTags}/>
+          <EditableTagGroup noteID={this.props.noteID} updateTags={this.props.updateTags} />
           <button type="button" onClick={this.save}>Save</button>
+          {/*<AggregateContentViewer />*/}
         </div>
       );
     } else {
