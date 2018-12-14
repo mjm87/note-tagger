@@ -7,6 +7,8 @@ import EditableNote from './EditableNote.js';
 import NoteSelector from './NoteSelector.js';
 import TagSelector from './TagSelector.js';
 
+import ImageComponent from './ImageComponent.js';
+
 module.exports = React.createClass({
   getInitialState: function () {
     return ({ selectedNote: null, selectedTags: ["untagged"], tags: [] });
@@ -113,6 +115,7 @@ module.exports = React.createClass({
           <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length}/>
           <button onClick={this.addNote} className="AddNote">Add new note</button>
           {editableNote()}
+          <ImageComponent/>
         </div>
       </div>
     );
