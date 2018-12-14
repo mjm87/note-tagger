@@ -49,10 +49,10 @@ module.exports = React.createClass({
     }
   },
   updateTitle: function (title) {
-    this.setState({ title: title });
+    this.setState({ title: title }, () => this.save());
   },
   updateContent: function (content) {
-    this.setState({ content: content });
+    this.setState({ content: content }, () => this.save());
   },
   save: function () {
     var note = {
