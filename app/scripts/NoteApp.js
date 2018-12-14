@@ -10,9 +10,10 @@ import TagSelector from './TagSelector.js';
 
 import ImageCopierComponent from './ImageCopier.js';
 
+
 module.exports = React.createClass({
   getInitialState: function () {
-    return ({ selectedNote: null, selectedTags: ["untagged"], tags: [] });
+    return ({ selectedNote: null, selectedTags: ["untagged"], tags: [], status: 0});
   },
   componentDidMount: function () {
     // TODO: pull in a note?
@@ -102,19 +103,24 @@ module.exports = React.createClass({
         console.log("failed to create new note");
       }.bind(this));
   },
+  onSave: function() {
+    var newStatus = this.state.status + 1;
+    if(newStatus > 9) newStatus = 0;
+    this.setState({status: newStatus});
+  },
   render: function () {
     var editableNote = function () {
-      if (this.state.selectedNote != null)
+      if (this.state.selectedNote != null) {
         return (
-          <EditableNote noteID={this.state.selectedNote} updateTags={this.updateTags} />
+          <EditableNote noteID={this.state.selectedNote} updateTags={this.updateTags} onSave={this.onSave}/>
         );
+      }
     }.bind(this);
     return (
       <div className="NoteApp">
         <TagSelector handleClick={this.handleClick} isSelected={this.isTagSelected} tags={this.state.tags} />
         <div className="NoteArea">
-          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length} />
-          <button onClick={this.addNote} className="AddNote">Add new note</button>
+          <NoteSelector onSelect={this.selectNote} tags={this.state.selectedTags} selectedNote={this.state.selectedNote} deselect={this.deselectNote} numOfTags={this.state.selectedTags.length} addNote={this.addNote} status={this.state.status}/>
           {editableNote()}
         </div>
         {/*<ImageCopierComponent/>*/}

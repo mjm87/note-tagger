@@ -67,6 +67,7 @@ module.exports = React.createClass({
       dataType: 'json'
     })
       .done(function (results) {
+        this.props.onSave();
       }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("failed to save");
