@@ -126,7 +126,7 @@ module.exports = React.createClass({
         <div className="Footer">
           <Link to={'/About'}>About</Link>
         </div>
-        {/*<ImageCopierComponent/>*/}
+        <ImageCopierComponent/>
       </div>
     );
   }
