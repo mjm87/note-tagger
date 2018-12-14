@@ -6,7 +6,7 @@ import '../css/base.css';
 import EditableTagGroup from './EditableTagGroup.js';
 import NoteHeader from './NoteHeader.js';
 import NoteContent from './NoteContent.js';
-//import AggregateContentViewer from './AggregateContentViewer.js';
+import ContentList from './ContentList.js';
 
 module.exports = React.createClass({
 
@@ -14,7 +14,8 @@ module.exports = React.createClass({
     return {
       title: "Untitled",
       content: "",
-      mounted: false
+      mounted: false,
+      status: 0
     };
   },
   componentDidMount: function () {
@@ -24,9 +25,12 @@ module.exports = React.createClass({
       dataType: 'json'
     })
       .done(function (results) {
-        this.setState({ title: results.name });
-        this.setState({ content: results.content });
-        this.setState({ mounted: true });
+        this.setState({ 
+          title: results.name,
+          content: results.content,
+          mounted: true,
+          status: 0
+        });
       }.bind(this))
       .fail(function (xhr, status, error) {
         console.log("failed");
@@ -40,19 +44,29 @@ module.exports = React.createClass({
         dataType: 'json'
       })
         .done(function (results) {
-          this.setState({ title: results.name });
-          this.setState({ content: results.content });
+          this.setState({ 
+            title: results.name,
+            content: results.content,
+            status: this.getNextStatus()
+          });
         }.bind(this))
         .fail(function (xhr, status, error) {
           console.log("failed");
         }.bind(this));
     }
   },
+  getNextStatus: function(){
+    if(this.state.status < 10) return this.state.status + 1;
+    else return 0;
+  },
   updateTitle: function (title) {
     this.setState({ title: title }, () => this.save());
   },
   updateContent: function (content) {
-    this.setState({ content: content }, () => this.save());
+    this.setState({ 
+      content: content,
+      status: this.getNextStatus()
+    }, () => this.save());
   },
   save: function () {
     var note = {
@@ -78,10 +92,10 @@ module.exports = React.createClass({
       return (
         <div className="EditableNote">
           <NoteHeader noteID={this.props.noteID} title={this.state.title} update={this.updateTitle} />
-          <NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />
+          {/*<NoteContent noteID={this.props.noteID} content={this.state.content} update={this.updateContent} />*/}
           <EditableTagGroup noteID={this.props.noteID} updateTags={this.props.updateTags} />
           <button type="button" onClick={this.save}>Save</button>
-          {/*<AggregateContentViewer />*/}
+          <ContentList noteID={this.props.noteID} content={this.state.content} status={this.state.status}/>
         </div>
       );
     } else {
