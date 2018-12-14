@@ -16,7 +16,13 @@ module.exports = React.createClass({
     this.retrieveTags();
   },
   selectNote: function (id) {
-    this.setState({ selectedNote: id });
+    if(this.state.selectedNote !== id) {
+      // update selected note to be this note
+      this.setState({ selectedNote: id });
+    } else {
+      // deselect the note (but not delete)
+      this.setState({selectedNote: null});
+    }
   },
 
   isTagSelected: function (tag) {
