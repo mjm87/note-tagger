@@ -45,11 +45,9 @@ module.exports = React.createClass({
         console.log("failed");
       })
   },
-  deleteThisNote: function () {
-    // var notes = this.state.notes;
-    // notes.filter((note) => note.id !== )
+  Delete: function (noteID) {
     $.ajax({
-      url: "/notes/" + this.state.selectedNote,
+      url: "/notes/" + noteID,
       type: 'DELETE',
       dataType: 'json'
     })
@@ -69,13 +67,18 @@ module.exports = React.createClass({
       var Select = this.props.onSelect;
       var notesList = this.state.notes.map(function (note) {
         var selectThisNote = function () {
+          this.setState({selectedNote: note.id})
           Select(note.id);
-        }
-        if (this.props.selectedNote === note.id) {
+        }.bind(this);
+        var deleteThisNote = function() {
+          this.Delete(note.id);
+          this.props.deselect("deleted");
+        }.bind(this);
+        if (this.state.selectedNote === note.id) {
           return (
             <li key={note.id}>
               <button onClick={selectThisNote} className="SelectedNote"> {note.name} </button>
-              <button onClick={this.deleteThisNote} className="DeleteNote">X</button>
+              <button onClick={deleteThisNote} className="DeleteNote">X</button>
             </li>
           );
         } else {
