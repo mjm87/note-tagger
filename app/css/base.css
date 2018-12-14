@@ -1,3 +1,4 @@
+/* This is the base CSS; fancy edits are ate the bottom */
 body {
   background: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -71,35 +72,41 @@ ul {
   padding: 3px;
 }
 
+/* All buttons get a nice shadow when moused over, to give them a 3-d look */
 button:hover{
   box-shadow: 0 5px 10px 0 rgba(0,0,0,0.24), 0 1px 5px 0 rgba(0,0,0,0.19)
 }
 
+/* On click, all buttons have a neat little depression animation downwards */
 button:active{
   transform: translateY(1px);
 }
 
+/* Buttons moused over get a pointer cursor to indicate their interactability */
 button{
   cursor: pointer;
 }
 
+/* The area where you can enter notes gets shifted down, and displays as flex */
 .NoteArea{
   margin-top: 20px;
 }
-
 .NoteArea{
   display: flex;
 }
 
+/* This separates the editable notes from the note list */
 .EditableNote{
   padding-left: 30px;
 }
 
+/* Setting a base size for the area you enter text into */
 .CommentContent>textarea{
   width: 35em;
   height: 25em;
 }
 
+/* Formatting and colors for the note list section */
 .NoteSelector{
   padding-top: 10px;
 }
@@ -117,12 +124,14 @@ button{
   color: white;
 }
 
+/* Formatting specific to the note that you have selected at a given time */
 .SelectedNote{
   background-color: royalblue;
   border-color: royalblue;
   color: white;
 }
 
+/* Formatting specific for the tags at the top, handling their selection, etc */
 .SelectableTag {
   background-color: white;
   border-color: #2196F3;
@@ -133,7 +142,6 @@ button{
   background: #2196F3;
   color: white;
 }
-
 .SelectedTag{
   background-color: #2193f3;
   color: white;
@@ -143,6 +151,7 @@ button{
   color: black;
 }
 
+/* Making our note adding button look better */
 .AddNote{
   height: 25px;
 }
@@ -150,6 +159,7 @@ button{
   height: 30px;
 }
 
+/* Putting the About link at the bottom of the page */
 .Footer{
   position: fixed;
   bottom: 0;

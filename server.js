@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-//Get a list of all tags or
+//Get a list of all tags
 app.get('/tags', function (req, res) {
   db.collection("tags").find(
     {},
@@ -34,7 +34,7 @@ app.get('/tags', function (req, res) {
     });
 });
 
-//Get a specific note based on ID
+//Get the name, content, and tags of a specific note based on that note's ID
 app.get('/notes/:noteID', function (req, res) {
   db.collection("notes").findOne(
     { id: req.params.noteID },
@@ -47,7 +47,10 @@ app.get('/notes/:noteID', function (req, res) {
 //Endpoint that creates a note with a given name and content, and with a default tag
 //if none are provided
 app.put('/notes', function (req, res) {
+  // We wanted to support having multiple notes with the same name, so we have to
+  // give each on a unique id, which we do using the current time.
   var newOrOldID = String(Date.now());
+  //If an ID was passed in, this is an update request, not a create request
   if (req.body.id) {
     newOrOldID = req.body.id;
     db.collection('notes').findOneAndUpdate({ id: newOrOldID }, {
@@ -60,20 +63,29 @@ app.put('/notes', function (req, res) {
       res.json(newOrOldID);
     });
   }
+  //Otherwise it is a create request, so we use the random ID we generated earlier
   else {
     var tagNames = req.body.tags;
+    //If no tags were sent in the request we need to give it the default "untagged"
+    //tag (which is hidden in the UI).
     if (!tagNames) {
       tagNames = [{ "name": "untagged" }];
     }
+    //This mongo request creates the note in the notes collection, and then goes
+    //in and creates any necessary tags in the tag collection as well, making
+    //sure that the new note is associated with all the tags it should be, and that
+    //the tags are associated with the new note's id.
     db.collection('notes').findOneAndUpdate({ id: newOrOldID }, {
       $set: {
         id: newOrOldID, name: req.body.name,
         content: req.body.content, tags: tagNames
       }
+      //Note: Upsert in a mongo request means if you don't find it what you are
+      //looking for, create it.
     }, { upsert: true }, function (err, result) {
       if (err) throw (err);
       for (let tag in tagNames) {
-        //Refactor this to a findOneAndUpdate
+        //This should be refactored to a findOneAndUpdate()
         db.collection("tags").findOne(
           { name: tagNames[tag].name },
           function (err, result2) {
@@ -88,23 +100,29 @@ app.put('/notes', function (req, res) {
           });
       }
     });
+    //We return the ID of the note to the caller of this endpoint
     res.json(newOrOldID);
   }
 });
 
 //This endpoint deletes a note with a given ID
 app.delete('/notes/:toBeDeleted', function (req, res) {
+  //Find and delete the specified note. This mongo call returns the deleted object
+  //which allows us to . . .
   db.collection("notes").findOneAndDelete(
     { id: req.params.toBeDeleted },
     function (err, result) {
       if (err) throw (err);
       let tags = result.value.tags;
+      // . . . go into the tags collection and delete the note ID from all the tags
+      // that were asssociated with that note . . .
       for (let tag in tags) {
         db.collection("tags").findOne(
-          //, notes: {id: {$eq: result.value.id}}
           { name: tags[tag].name },
           function (err, result2) {
             if (err) throw (err);
+            // . . . however, if that note was the only note a given tag was on
+            // that tag needs to be deleted too (which is handled in the else, below)
             if (result2.notes.length > 1) {
               db.collection("tags").updateOne(
                 { name: tags[tag].name },
@@ -133,7 +151,7 @@ app.delete('/notes/:toBeDeleted', function (req, res) {
     });
 });
 
-//Get the tags on a note
+//Get the tags associated with a note
 app.get('/notes/:noteID/tags', function (req, res) {
   var noteID = req.params.noteID;
   db.collection("notes").findOne(
@@ -186,6 +204,9 @@ app.put('/:collection/:noteID/:tagName', function (req, res) {
       });
   }
   //Hacks
+  //EDIT: we realized that to this endpoint never needed to get explicitly into the
+  //tags collection instead of the notes collection, so we made it always do that.
+  //This whole endpoint, while functional, should probably be refactored.
   if (collectionToQuery === "notes") {
     db.collection("tags").findOneAndUpdate(
       { name: tag },
@@ -241,8 +262,13 @@ app.delete('/:collection/:noteID/:tagName', function (req, res) {
     });
 });
 
+//This endpoint filters out notes based on an array of tags passed into the API
+//call. We documented this algorithm fairly heavily because we were having trouble
+//with it for quite a while.
 app.post('/filteredNotes', function (req, res) {
   var noteSet = []
+  //This mongo call finds all the notes in our collection, and returns their names
+  //and IDs
   db.collection("notes").find(
     {},
     { _id: false, content: false }).toArray(function (err, notes) {
@@ -268,108 +294,20 @@ app.post('/filteredNotes', function (req, res) {
           if (!noteHasTag) {
             isNoteIncluded = false;
           }
-
         }
         if (isNoteIncluded) {
           noteSet.push({ "id": notes[note].id, "name": notes[note].name });
         }
       }
+      //noteSet should end up as an array of IDs and names, so that our note list
+      //can display those names and search for more info based on their ids when
+      //a given note is selected.
       res.json(noteSet);
     })
 });
 
-// //This endpoint filters notes depending on a passed in tags array
-// app.post('/filteredNotes', function(req, res) {
-//   var noteSet = new Set([])
-//   if (req.body.tags.length > 0) {
-//     for(let tag in req.body.tags) {
-//       db.collection("tags").findOne(
-//         {name: req.body.tags[tag].name},
-//         {_id: false, notes: true},
-//         function(err, notesOfThisTag){
-//           if (err) throw (err);
-//           for(note in notesOfThisTag.notes) {
-//             noteSet.add(notesOfThisTag.notes[note].id);
-//           }
-//           //If we are on the last iteration of our asynchronous calls
-//           console.log(tag)
-//           if (tag === req.body.tags.length - 1) {
-//             var nameIDSet = new Set([]);
-//             for(let note in noteSet){
-//               db.collection("notes").findOne(
-//                 {id: note},
-//                 {name: true, id: true, _id: false},
-//                 function(err, nameIDPair) {
-//                   if (err) throw (err)
-//                   nameIDSet.add(nameIDPair);
-//                 });
-//                 if(note === noteSet.size - 1) {
-//                     console.log(nameIDSet)
-//                     res.json(nameIDSet);
-//                 }
-//               }
-//             };
-//           })
-//         }
-//       }
-//       else {
-//         db.collection("tags").findOne(
-//           {name: "untagged"},
-//           {_id: false, notes: true},
-//           function(err, notesOfThisTag){
-//             if (err) throw (err);
-//             for(note in notesOfThisTag) {
-//               noteSet.add(note.id);
-//             }
-//           });
-//         }
-// });
-
-// //Endpoints to add or remove tags from the selectedTags collection
-// app.get('/selectedTags', function(req, res){
-//   db.collections("selectedTags").find(
-//       { },
-//       {name: true, _id:false}).toArray(function(err, tagNames) {
-//           if (err) throw (err);
-//           res.json(tagNames);
-//   });
-// });
-//
-// app.post('/selectedTags/:tagName', function(req, res){
-//   db.collections("selectedTags").findOneAndUpdate(
-//     {name:req.params.tagName},
-//     {upsert: true},
-//     function(err, notUpserted) {
-//       if (err) throw (err);
-//       if (!notUpserted) {
-//         res.json("added");
-//       }
-//       else {
-//         db.collections("selectedTags").findOneAndDelete(
-//           {name: req.params.tagName},
-//           function(err, deleted){
-//             if (err) throw (err);
-//             res.json("deleted");
-//           }
-//         )
-//       }
-//     }
-//   )
-// });
-//
-// app.delete('/selectedTags/:tagName', function(req, res){
-//   db.collections("selectedTags").findOneAndDelete(
-//     {name: req.params.tagName},
-//     function(err, success) {
-//       if (err) throw (err);
-//       res.json("deleted");
-//   });
-// });
-
-//TODO ROUTING GOES HERE, HOORAY!
-
-
 //Don't put anything after this that isn't already here; these two need to be the end of the file
+//This sets up our mongo connection that we use throughout the rest of the server
 var mongoConnectionString = 'mongodb://notetaggerdb:' + process.env.MONGO_PASSWORD + '@ds157742.mlab.com:57742/note-tagger';
 MongoClient.connect(mongoConnectionString, function (err, client) {
   if (err) throw err;
