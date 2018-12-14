@@ -41,7 +41,9 @@ module.exports = React.createClass({
     this.setState({ selectedNote: null });
     console.log(status + ": " + (status==="deleted"));
     if(status === "deleted") {
-      this.retrieveTags();
+      // update tags in a second or so to ensure the database has been
+      // updated and properly cleansed of any unused tags
+      setTimeout(this.retrieveTags, 500);
     };
   },
 

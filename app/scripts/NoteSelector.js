@@ -51,9 +51,6 @@ module.exports = React.createClass({
     notesList.filter((n)=>n.id !== noteID);
     this.setState({notes: notesList});
 
-    // let NoteApp know that the note has been deleted
-    this.props.deselect("deleted");
-    
     // clear out the selected not status
     this.setState({selectedNote: null});
 
@@ -66,6 +63,8 @@ module.exports = React.createClass({
       .done(function (results) {
         // get an updated list of notes?
         this.niceAjaxCall(this.props.tags);
+        // let NoteApp know that the note has been deleted (and allow it to take care of updating tags)
+        this.props.deselect("deleted");
         console.log("deleted note");
       }.bind(this))
       .fail(function (xhr, status, error) {

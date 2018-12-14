@@ -6,23 +6,19 @@ import '../css/base.css';
 
 module.exports = React.createClass({
 
-  getInitialState: function () {
-    return ({ tags: [] });
-  },
-  componentDidMount: function () {
-    
-  },
   render: function () {
 
     var selectableTags = this.props.tags.map(function (tag) {
-      if (this.props.isSelected(tag.name)){
-        return (
-          <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectedTag" />
-        );
-      } else {
-        return (
-          <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectableTag" />
-        );
+      if (tag.name !== "untagged") {
+        if (this.props.isSelected(tag.name)) {
+          return (
+            <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectedTag" />
+          );
+        } else {
+          return (
+            <Tag handleClick={this.props.handleClick} tagName={tag.name} tagType="SelectableTag" />
+          );
+        }
       }
     }.bind(this));
     return (
