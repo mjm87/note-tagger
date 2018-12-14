@@ -2,26 +2,6 @@ Bugs
 ----
 
 
-TWEAK to endpoint for deleting a note:
-=======================================
-Deleting a note doesn't necessarily delete all tagged-links to that document.
-I created two documents and deleted one. Any tags which only existed on the deleted document
-were properly removed HOWEVER, the untagged tag which was shared by both documents still had the document referenced...
-
-
-Refresh stuff is still wonky:
-=============================
-Need to tweak TagSelector and NoteSelector to update
-whenever a note is added or deleted PLUS when tags are created / deleted
-PLUS when a selectable tag is selected or unselected...
-
-
-
-
-
-
-
-
 Features
 --------
 
