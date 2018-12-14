@@ -10,5 +10,6 @@ ReactDOM.render((
     <Router history={browserHistory}>
         <Route path="/" component={NoteApp} />
         <Route path="/About" component={AboutPage} />
+        <Route path='/repo' component={() => window.open('https://github.com/mjm87/note-tagger')}/>
     </Router>
 ), document.getElementById('content'));
